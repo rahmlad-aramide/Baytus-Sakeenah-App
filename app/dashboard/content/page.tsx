@@ -1,14 +1,26 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { BookOpen, Heart, Search, Star, Eye, TrendingUp } from "lucide-react"
-import Link from "next/link"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { BookOpen, Heart, Search, Star, Eye, TrendingUp } from "lucide-react";
+import Link from "next/link";
 
 const categories = [
   { id: "all", name: "All Content", count: 156 },
@@ -18,7 +30,7 @@ const categories = [
   { id: "financial-planning", name: "Financial Planning", count: 19 },
   { id: "in-law-relations", name: "In-Law Relations", count: 15 },
   { id: "islamic-principles", name: "Islamic Principles", count: 17 },
-]
+];
 
 const articles = [
   {
@@ -69,7 +81,8 @@ const articles = [
   {
     id: 4,
     title: "Financial Harmony: Islamic Principles for Couples",
-    description: "Managing finances as a Muslim couple according to Islamic principles and modern practical advice.",
+    description:
+      "Managing finances as a Muslim couple according to Islamic principles and modern practical advice.",
     category: "Financial Planning",
     author: "Dr. Yusuf Ibrahim",
     readTime: "12 min read",
@@ -110,52 +123,60 @@ const articles = [
     featured: true,
     publishedAt: "2024-01-03",
   },
-]
+];
 
 export default function ContentHubPage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("all")
-  const [sortBy, setSortBy] = useState("recent")
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [sortBy, setSortBy] = useState("recent");
 
   const filteredArticles = articles.filter((article) => {
     const matchesSearch =
       article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      article.tags.some((tag) =>
+        tag.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
     const matchesCategory =
-      selectedCategory === "all" || article.category.toLowerCase().replace(/\s+/g, "-") === selectedCategory
+      selectedCategory === "all" ||
+      article.category.toLowerCase().replace(/\s+/g, "-") === selectedCategory;
 
-    return matchesSearch && matchesCategory
-  })
+    return matchesSearch && matchesCategory;
+  });
 
   const sortedArticles = [...filteredArticles].sort((a, b) => {
     switch (sortBy) {
       case "popular":
-        return b.views - a.views
+        return b.views - a.views;
       case "liked":
-        return b.likes - a.likes
+        return b.likes - a.likes;
       case "recent":
       default:
-        return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+        return (
+          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+        );
     }
-  })
+  });
 
-  const featuredArticles = articles.filter((article) => article.featured)
+  const featuredArticles = articles.filter((article) => article.featured);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 mt-17 lg:mt-0">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">Content Hub</h1>
-        <p className="text-muted-foreground">
-          Discover Islamic guidance, practical advice, and wisdom for strengthening your marriage
+        <h1 className="text-xl lg:text-2xl xl:text-3xl font-bold text-foreground mb-2">
+          Content Hub
+        </h1>
+        <p className="text-muted-foreground text-sm lg:text-base">
+          Discover Islamic guidance, practical advice, and wisdom for
+          strengthening your marriage
         </p>
       </div>
 
       {/* Search and Filters */}
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
+        <div className="relative w-full max-w-xs md:flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
             placeholder="Search articles, topics, or tags..."
@@ -165,7 +186,7 @@ export default function ContentHubPage() {
           />
         </div>
         <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-full md:w-48">
+          <SelectTrigger className="w-full max-w-xs md:w-48">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -176,49 +197,65 @@ export default function ContentHubPage() {
         </Select>
       </div>
 
-      <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7">
+      <Tabs
+        value={selectedCategory}
+        onValueChange={setSelectedCategory}
+        className="w-full"
+      >
+        <TabsList className="grid grid-cols-3 lg:grid-cols-7 lg:gap-2 h-full">
           {categories.map((category) => (
-            <TabsTrigger key={category.id} value={category.id} className="text-xs">
+            <TabsTrigger
+              key={category.id}
+              value={category.id}
+              className="text-[7px] md:text-xs flex items-center justify-between"
+            >
               {category.name}
-              <Badge variant="secondary" className="ml-1 text-xs">
+              <Badge variant="secondary" className="text-[6px] md:text-xs">
                 {category.count}
               </Badge>
             </TabsTrigger>
           ))}
         </TabsList>
 
-        <TabsContent value={selectedCategory} className="mt-8">
+        <TabsContent value={selectedCategory} className="mt-15 lg:mt-8">
           {/* Featured Articles */}
           {selectedCategory === "all" && (
             <div className="mb-8">
               <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center">
-                <Star className="w-5 h-5 mr-2 text-primary" />
+                <Star className="w-5 h-5 mr-2 text-primary text-base lg:text-xl" />
                 Featured Articles
               </h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {featuredArticles.map((article) => (
-                  <Card key={article.id} className="border-border hover:shadow-lg transition-shadow">
-                    <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 rounded-t-lg flex items-center justify-center">
-                      <BookOpen className="w-8 h-8 text-primary" />
-                    </div>
-                    <CardHeader>
-                      <div className="flex items-center justify-between mb-2">
+                  <Card
+                    key={article.id}
+                    className="border-border hover:shadow-lg transition-shadow"
+                  >
+                    <CardContent className="p-6">
+                      <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 rounded-t-lg flex items-center justify-center">
+                        <BookOpen className="w-8 h-8 text-primary" />
+                      </div>
+
+                      <div className="flex items-center justify-between mt-3 mb-3">
                         <Badge variant="secondary">{article.category}</Badge>
-                        <Badge variant="outline" className="text-primary border-primary">
+                        <Badge
+                          variant="outline"
+                          className="text-xs lg:text-sm text-primary border-primary"
+                        >
                           Featured
                         </Badge>
                       </div>
-                      <CardTitle className="text-lg leading-tight">{article.title}</CardTitle>
-                      <CardDescription className="line-clamp-2">{article.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+                      <CardTitle className="text-base lg:text-lg leading-tight">
+                        {article.title}
+                      </CardTitle>
+                      <CardDescription className="text-sm ">
+                        {article.description}
+                      </CardDescription>
+
+                      <div className="flex items-center justify-between text-xs lg:text-sm text-muted-foreground mt-3">
                         <span>{article.author}</span>
                         <span>{article.readTime}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                        <div className="flex items-center space-x-4 text-[10px] lg:text-xs text-muted-foreground">
                           <span className="flex items-center">
                             <Eye className="w-3 h-3 mr-1" />
                             {article.views}
@@ -228,11 +265,15 @@ export default function ContentHubPage() {
                             {article.likes}
                           </span>
                         </div>
-                        <Button size="sm" asChild>
-                          <Link href={`/dashboard/content/${article.id}`}>Read Article</Link>
-                        </Button>
                       </div>
                     </CardContent>
+                    <div className="flex items-center justify-end px-2">
+                      <Button size="sm" asChild>
+                        <Link href={`/dashboard/content/${article.id}`}>
+                          Read Article
+                        </Link>
+                      </Button>
+                    </div>
                   </Card>
                 ))}
               </div>
@@ -243,13 +284,20 @@ export default function ContentHubPage() {
           <div>
             <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center">
               <TrendingUp className="w-5 h-5 mr-2 text-primary" />
-              {selectedCategory === "all" ? "All Articles" : categories.find((c) => c.id === selectedCategory)?.name}
-              <span className="ml-2 text-sm text-muted-foreground">({sortedArticles.length} articles)</span>
+              {selectedCategory === "all"
+                ? "All Articles"
+                : categories.find((c) => c.id === selectedCategory)?.name}
+              <span className="ml-2 text-sm text-muted-foreground">
+                ({sortedArticles.length} articles)
+              </span>
             </h2>
 
             <div className="grid gap-6">
               {sortedArticles.map((article) => (
-                <Card key={article.id} className="border-border hover:shadow-md transition-shadow">
+                <Card
+                  key={article.id}
+                  className="border-border hover:shadow-md transition-shadow"
+                >
                   <CardContent className="p-6">
                     <div className="flex flex-col md:flex-row gap-6">
                       <div className="w-full md:w-48 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -259,17 +307,28 @@ export default function ContentHubPage() {
                         <div className="flex items-center gap-2 mb-2">
                           <Badge variant="secondary">{article.category}</Badge>
                           {article.featured && (
-                            <Badge variant="outline" className="text-primary border-primary">
+                            <Badge
+                              variant="outline"
+                              className="text-primary border-primary"
+                            >
                               Featured
                             </Badge>
                           )}
                         </div>
-                        <h3 className="text-xl font-semibold text-foreground mb-2">{article.title}</h3>
-                        <p className="text-muted-foreground mb-4 line-clamp-2">{article.description}</p>
+                        <h3 className="text-xl font-semibold text-foreground mb-2">
+                          {article.title}
+                        </h3>
+                        <p className="text-muted-foreground mb-4 line-clamp-2">
+                          {article.description}
+                        </p>
 
                         <div className="flex flex-wrap gap-2 mb-4">
                           {article.tags.map((tag) => (
-                            <Badge key={tag} variant="outline" className="text-xs">
+                            <Badge
+                              key={tag}
+                              variant="outline"
+                              className="text-xs"
+                            >
                               {tag}
                             </Badge>
                           ))}
@@ -288,13 +347,17 @@ export default function ContentHubPage() {
                               {article.likes}
                             </span>
                           </div>
-                          <Button asChild>
-                            <Link href={`/dashboard/content/${article.id}`}>Read Article</Link>
-                          </Button>
                         </div>
                       </div>
                     </div>
                   </CardContent>
+                  <div className="flex items-center justify-end">
+                    <Button asChild>
+                      <Link href={`/dashboard/content/${article.id}`}>
+                        Read Article
+                      </Link>
+                    </Button>
+                  </div>
                 </Card>
               ))}
             </div>
@@ -302,13 +365,18 @@ export default function ContentHubPage() {
             {sortedArticles.length === 0 && (
               <div className="text-center py-12">
                 <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">No articles found</h3>
-                <p className="text-muted-foreground">Try adjusting your search terms or browse different categories.</p>
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  No articles found
+                </h3>
+                <p className="text-muted-foreground">
+                  Try adjusting your search terms or browse different
+                  categories.
+                </p>
               </div>
             )}
           </div>
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
