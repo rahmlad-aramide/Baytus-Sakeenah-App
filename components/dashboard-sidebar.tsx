@@ -47,14 +47,24 @@ const sidebarItems = [
   { title: "Help & Support", href: "/dashboard/help", icon: HelpCircle },
 ];
 
-function SidebarContent({ pathname }: { pathname: string }) {
+function SidebarContent({
+  pathname,
+  setOpen,
+}: {
+  pathname: string;
+  setOpen?: (open: boolean) => void;
+}) {
   return (
     <div className="flex flex-col flex-grow px-4">
       <nav className="flex-1 space-y-2 mt-4">
         {sidebarItems.map((item) => {
           const isActive = pathname === item.href;
           return (
-            <Link key={item.href} href={item.href}>
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setOpen?.(false)}
+            >
               <Button
                 variant={isActive ? "secondary" : "ghost"}
                 className={cn(
@@ -136,7 +146,7 @@ export function DashboardSidebar() {
             </SheetTitle>
           </SheetHeader>
 
-          <SidebarContent pathname={pathname} />
+          <SidebarContent pathname={pathname} setOpen={setOpen} />
         </SheetContent>
       </Sheet>
 

@@ -114,50 +114,50 @@ const guides = [
 
 export default function HelpPage() {
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 mt-17 lg:mt-0">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-gray-900">Help & Support</h1>
-        <p className="text-gray-600">Find answers to your questions and get the help you need</p>
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">Help & Support</h1>
+        <p className="text-sm lg:text-base text-gray-600">Find answers to your questions and get the help you need</p>
       </div>
 
       {/* Quick Search */}
       <Card>
-        <CardContent className="p-6">
+        <CardContent className=" px-4 lg:px-6">
           <div className="relative">
-            <HelpCircle className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <Input placeholder="Search for help articles, FAQs, or guides..." className="pl-12 text-lg h-12" />
+            <HelpCircle className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 lg:h-5 lg:w-5" />
+            <Input placeholder="Search for help articles, FAQs, or guides..." className="pl-10 lg:pl-12 h-10 lg:h-12 placeholder:text-xs lg:placeholder:text-sm" />
           </div>
         </CardContent>
       </Card>
 
       {/* Help Content */}
       <Tabs defaultValue="faq" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="faq">FAQ</TabsTrigger>
-          <TabsTrigger value="guides">Guides</TabsTrigger>
-          <TabsTrigger value="contact">Contact</TabsTrigger>
-          <TabsTrigger value="resources">Resources</TabsTrigger>
+        <TabsList className="grid w-full h-full grid-cols-4">
+          <TabsTrigger value="faq" className="text-xs md:text-sm lg:text-base">FAQ</TabsTrigger>
+          <TabsTrigger value="guides" className="text-xs md:text-sm lg:text-base">Guides</TabsTrigger>
+          <TabsTrigger value="contact" className="text-xs md:text-sm lg:text-base">Contact</TabsTrigger>
+          <TabsTrigger value="resources" className="text-xs md:text-sm lg:text-base">Resources</TabsTrigger>
         </TabsList>
 
         {/* FAQ Tab */}
-        <TabsContent value="faq" className="space-y-6">
+        <TabsContent value="faq" className="space-y-3">
           {faqs.map((category) => (
             <Card key={category.category}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <HelpCircle className="h-5 w-5 text-emerald-600" />
+                  <HelpCircle className="h-4 w-4 lg:h-5 lg:w-5 text-emerald-600" />
                   {category.category}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {category.questions.map((faq, index) => (
                   <Collapsible key={index}>
-                    <CollapsibleTrigger className="flex items-center justify-between w-full p-4 text-left bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
-                      <span className="font-medium text-gray-900">{faq.question}</span>
+                    <CollapsibleTrigger className="flex items-center justify-between w-full p-3 lg:p-4 text-left bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
+                      <span className="text-sm lg:text-base font-medium text-gray-900">{faq.question}</span>
                       <ChevronDown className="h-4 w-4 text-gray-500" />
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="p-4 text-gray-700 leading-relaxed">{faq.answer}</CollapsibleContent>
+                    <CollapsibleContent className="p-4 text-xs lg:text-base text-gray-700 leading-relaxed text-justify">{faq.answer}</CollapsibleContent>
                   </Collapsible>
                 ))}
               </CardContent>
@@ -171,26 +171,26 @@ export default function HelpPage() {
             {guides.map((guide) => (
               <Card key={guide.title} className="hover:shadow-md transition-shadow cursor-pointer">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Book className="h-5 w-5 text-emerald-600" />
+                  <CardTitle className="flex items-center gap-2 text-sm lg:text-base">
+                    <Book className="h-4 w-4 lg:h-5 lg:w-5 text-emerald-600" />
                     {guide.title}
                   </CardTitle>
-                  <p className="text-gray-600 text-sm">{guide.description}</p>
+                  <p className="text-gray-600 text-xs lg:text-sm">{guide.description}</p>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-gray-700">Topics covered:</p>
                     <ul className="space-y-1">
                       {guide.topics.map((topic) => (
-                        <li key={topic} className="text-sm text-gray-600 flex items-center gap-2">
+                        <li key={topic} className="text-xs lg:text-sm text-gray-600 flex items-center gap-2">
                           <div className="w-1 h-1 bg-emerald-600 rounded-full" />
                           {topic}
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <Button variant="outline" className="w-full mt-4 bg-transparent">
-                    <ExternalLink className="h-4 w-4 mr-2" />
+                  <Button variant="outline" className="w-full mt-4 bg-transparent text-[10px] lg:text-base">
+                    <ExternalLink className="h-3 w-3 lg:h-4 lg:w-4 lg:mr-2" />
                     Read Guide
                   </Button>
                 </CardContent>
@@ -206,33 +206,33 @@ export default function HelpPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Get in Touch</CardTitle>
-                <p className="text-gray-600">Choose the best way to reach our support team</p>
+                <p className="text-gray-600 text-sm lg:text-base">Choose the best way to reach our support team</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-3 p-3 border rounded-lg">
                   <Mail className="h-5 w-5 text-emerald-600" />
-                  <div>
-                    <p className="font-medium">Email Support</p>
-                    <p className="text-sm text-gray-600">support@baytus-sakeenah.com</p>
-                    <p className="text-xs text-gray-500">Response within 24 hours</p>
+                  <div className="space-y-1">
+                    <p className="font-medium text-sm lg:text-base">Email Support</p>
+                    <p className="text-xs lg:text-sm text-gray-600">support@baytus-sakeenah.com</p>
+                    <p className="text-[10px] lg:text-xs text-gray-500">Response within 24 hours</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 p-3 border rounded-lg">
                   <MessageCircle className="h-5 w-5 text-emerald-600" />
-                  <div>
-                    <p className="font-medium">Live Chat</p>
-                    <p className="text-sm text-gray-600">Available 9 AM - 6 PM EST</p>
-                    <p className="text-xs text-gray-500">Monday - Friday</p>
+                  <div className="space-y-1">
+                    <p className="font-medium text-sm lg:text-base">Live Chat</p>
+                    <p className="text-xs lg:text-sm text-gray-600">Available 9 AM - 6 PM EST</p>
+                    <p className="text-[10px] lg:text-xs text-gray-500">Monday - Friday</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 p-3 border rounded-lg">
                   <Phone className="h-5 w-5 text-emerald-600" />
-                  <div>
-                    <p className="font-medium">Emergency Support</p>
-                    <p className="text-sm text-gray-600">For urgent safety concerns</p>
-                    <p className="text-xs text-gray-500">Available 24/7</p>
+                  <div className="space-y-1">
+                    <p className="font-medium text-sm lg:text-base">Emergency Support</p>
+                    <p className="text-xs lg:text-sm text-gray-600">For urgent safety concerns</p>
+                    <p className="text-[10px] lg:text-xs text-gray-500">Available 24/7</p>
                   </div>
                 </div>
               </CardContent>
@@ -242,17 +242,17 @@ export default function HelpPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Send us a Message</CardTitle>
-                <p className="text-gray-600">We'll get back to you as soon as possible</p>
+                <p className="text-gray-600 text-sm lg:text-base">We'll get back to you as soon as possible</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Subject</label>
-                  <Input placeholder="What can we help you with?" />
+                  <Input placeholder="What can we help you with?" className="placeholder:text-xs lg:placeholder:text-sm" />
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Category</label>
-                  <select className="w-full p-2 border rounded-md">
+                  <select className="w-full p-2 border rounded-md text-xs lg:text-sm">
                     <option>Technical Issue</option>
                     <option>Account Problem</option>
                     <option>Privacy Concern</option>
@@ -266,11 +266,11 @@ export default function HelpPage() {
                   <label className="text-sm font-medium">Message</label>
                   <Textarea
                     placeholder="Please describe your issue or question in detail..."
-                    className="min-h-[120px]"
+                    className="min-h-[120px] placeholder:text-xs lg:placeholder:text-sm"
                   />
                 </div>
 
-                <Button className="w-full bg-gradient-to-r from-emerald-700 to-green-600 hover:from-emerald-800 hover:to-green-700">
+                <Button className="w-full bg-gradient-to-r from-emerald-700 to-green-600 hover:from-emerald-800 hover:to-green-700 text-sm lg:text-base">
                   Send Message
                 </Button>
 
@@ -292,21 +292,21 @@ export default function HelpPage() {
                   Policies & Guidelines
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-3 text-sm lg:text-base">
                 <Button variant="outline" className="w-full justify-start bg-transparent">
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="h-4 w-4 lg:mr-2" />
                   Community Guidelines
                 </Button>
                 <Button variant="outline" className="w-full justify-start bg-transparent">
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="h-4 w-4 lg:mr-2" />
                   Privacy Policy
                 </Button>
                 <Button variant="outline" className="w-full justify-start bg-transparent">
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="h-4 w-4 lg:mr-2" />
                   Terms of Service
                 </Button>
                 <Button variant="outline" className="w-full justify-start bg-transparent">
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="h-4 w-4 lg:mr-2" />
                   Safety Guidelines
                 </Button>
               </CardContent>
@@ -319,21 +319,21 @@ export default function HelpPage() {
                   Educational Resources
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-3 text-sm lg:text-base">
                 <Button variant="outline" className="w-full justify-start bg-transparent">
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="h-4 w-4 lg:mr-2" />
                   Islamic Marriage Resources
                 </Button>
                 <Button variant="outline" className="w-full justify-start bg-transparent">
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="h-4 w-4 lg:mr-2" />
                   Communication Guides
                 </Button>
                 <Button variant="outline" className="w-full justify-start bg-transparent">
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="h-4 w-4 lg:mr-2" />
                   Financial Planning Tools
                 </Button>
                 <Button variant="outline" className="w-full justify-start bg-transparent">
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="h-4 w-4 lg:mr-2" />
                   Parenting Resources
                 </Button>
               </CardContent>
@@ -371,11 +371,11 @@ export default function HelpPage() {
                   <span className="text-sm">All systems operational</span>
                 </div>
                 <Button variant="outline" className="w-full justify-start bg-transparent">
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="h-4 w-4 lg:mr-2" />
                   View Status Page
                 </Button>
                 <Button variant="outline" className="w-full justify-start bg-transparent">
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="h-4 w-4 lg:mr-2" />
                   Recent Updates
                 </Button>
               </CardContent>
@@ -387,12 +387,12 @@ export default function HelpPage() {
       {/* Still Need Help */}
       <Card className="bg-emerald-50 border-emerald-200">
         <CardContent className="p-6 text-center">
-          <h3 className="text-lg font-semibold text-emerald-800 mb-2">Still need help?</h3>
-          <p className="text-emerald-700 mb-4">
+          <h3 className="text-base lg:text-lg font-semibold text-emerald-800 mb-2">Still need help?</h3>
+          <p className="text-emerald-700 mb-4 text-sm lg:text-base">
             Our support team is here to help you with any questions or concerns you may have.
           </p>
-          <Button className="bg-gradient-to-r from-emerald-700 to-green-600 hover:from-emerald-800 hover:to-green-700">
-            <MessageCircle className="h-4 w-4 mr-2" />
+          <Button className="bg-gradient-to-r from-emerald-700 to-green-600 hover:from-emerald-800 hover:to-green-700 text-sm lg:text-base">
+            <MessageCircle className="h-4 w-4 lg:mr-2" />
             Contact Support
           </Button>
         </CardContent>

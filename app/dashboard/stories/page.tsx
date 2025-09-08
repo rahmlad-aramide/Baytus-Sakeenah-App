@@ -1,10 +1,16 @@
-import { Search, Heart, BookOpen, Clock, User } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import Link from "next/link"
+import { Search, Heart, BookOpen, Clock, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Link from "next/link";
 
 const stories = [
   {
@@ -85,7 +91,7 @@ const stories = [
     publishedAt: "3 weeks ago",
     featured: true,
   },
-]
+];
 
 const categories = [
   "All Stories",
@@ -95,16 +101,20 @@ const categories = [
   "Family Relations",
   "Financial Wisdom",
   "Trials & Patience",
-]
+];
 
 export default function StoriesPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mt-17 lg:mt-0">
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Real Stories</h1>
-          <p className="text-gray-600 mt-1">Authentic experiences from our community members</p>
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">
+            Real Stories
+          </h1>
+          <p className="text-sm md:text-base text-gray-600 mt-1">
+            Authentic experiences from our community members
+          </p>
         </div>
         <Button className="bg-gradient-to-r from-emerald-700 to-green-600 hover:from-emerald-800 hover:to-green-700">
           Share Your Story
@@ -112,26 +122,32 @@ export default function StoriesPage() {
       </div>
 
       {/* Search and Filters */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center">
-        <div className="relative flex-1">
+      <div className="flex flex-col md:flex-row md:items-center gap-4">
+        <div className="relative w-full flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input placeholder="Search stories..." className="pl-10" />
+          <Input
+            placeholder="Search stories..."
+            className="pl-10 placeholder:text-xs lg:placeholder:text-sm"
+          />
         </div>
         <div className="flex gap-2">
           <Select defaultValue="all">
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-2/3 lg:w-[180px] text-xs lg:text-sm">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
               {categories.map((category) => (
-                <SelectItem key={category} value={category.toLowerCase().replace(/\s+/g, "-")}>
+                <SelectItem
+                  key={category}
+                  value={category.toLowerCase().replace(/\s+/g, "-")}
+                >
                   {category}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
           <Select defaultValue="recent">
-            <SelectTrigger className="w-[140px]">
+            <SelectTrigger className="w-1/3 lg:w-[140px] text-xs lg:text-sm">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
@@ -145,29 +161,46 @@ export default function StoriesPage() {
 
       {/* Featured Stories */}
       <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Featured Stories</h2>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <h2 className="text-base lg:text-xl font-semibold text-gray-900 mb-4">
+          Featured Stories
+        </h2>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           {stories
             .filter((story) => story.featured)
             .map((story) => (
-              <Card key={story.id} className="hover:shadow-lg transition-shadow border-l-4 border-l-emerald-600">
+              <Card
+                key={story.id}
+                className="hover:shadow-lg transition-shadow border-l-4 border-l-emerald-600"
+              >
                 <CardHeader>
                   <div className="flex items-start justify-between">
-                    <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                    <Badge
+                      variant="secondary"
+                      className="bg-emerald-50 text-emerald-700 border-emerald-200"
+                    >
                       {story.category}
                     </Badge>
-                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-red-500">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-gray-400 hover:text-red-500"
+                    >
                       <Heart className="h-4 w-4" />
                     </Button>
                   </div>
-                  <CardTitle className="text-lg leading-tight">
-                    <Link href={`/dashboard/stories/${story.id}`} className="hover:text-emerald-700 transition-colors">
+                  <CardTitle className="text-base lg:text-lg leading-tight">
+                    <Link
+                      href={`/dashboard/stories/${story.id}`}
+                      className="hover:text-emerald-700 transition-colors"
+                    >
                       {story.title}
                     </Link>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-gray-600 text-sm leading-relaxed">{story.excerpt}</p>
+                  <p className="text-gray-600 text-xs lg:text-sm text-justify lg:text-left leading-relaxed">
+                    {story.excerpt}
+                  </p>
                   <div className="flex flex-wrap gap-1">
                     {story.tags.map((tag) => (
                       <Badge key={tag} variant="outline" className="text-xs">
@@ -175,7 +208,7 @@ export default function StoriesPage() {
                       </Badge>
                     ))}
                   </div>
-                  <div className="flex items-center justify-between text-sm text-gray-500">
+                  <div className="flex items-center justify-between text-xs lg:text-sm text-gray-500">
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-1">
                         <User className="h-3 w-3" />
@@ -199,30 +232,46 @@ export default function StoriesPage() {
 
       {/* All Stories */}
       <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">All Stories</h2>
+        <h2 className="text-base lg:text-xl font-semibold text-gray-900 mb-4">
+          All Stories
+        </h2>
         <div className="space-y-4">
           {stories.map((story) => (
             <Card key={story.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
+              <CardContent className="px-6">
                 <div className="flex items-start justify-between mb-3">
-                  <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                  <Badge
+                    variant="secondary"
+                    className="bg-emerald-50 text-emerald-700 border-emerald-200"
+                  >
                     {story.category}
                   </Badge>
-                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-red-500">
+                  <div className="flex items-center">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-gray-400 hover:text-red-500"
+                    >
                       <Heart className="h-4 w-4" />
                     </Button>
-                    <span className="text-sm text-gray-500">{story.likes}</span>
+                    <span className="text-xs lg:text-sm text-gray-500">
+                      {story.likes}
+                    </span>
                   </div>
                 </div>
 
-                <h3 className="text-lg font-semibold mb-2">
-                  <Link href={`/dashboard/stories/${story.id}`} className="hover:text-emerald-700 transition-colors">
+                <h3 className="text-base lg:text-lg font-semibold mb-2">
+                  <Link
+                    href={`/dashboard/stories/${story.id}`}
+                    className="hover:text-emerald-700 transition-colors"
+                  >
                     {story.title}
                   </Link>
                 </h3>
 
-                <p className="text-gray-600 mb-3 leading-relaxed">{story.excerpt}</p>
+                <p className="text-gray-600 text-xs lg:text-sm text-justify lg:text-left mb-3 leading-relaxed">
+                  {story.excerpt}
+                </p>
 
                 <div className="flex flex-wrap gap-1 mb-3">
                   {story.tags.map((tag) => (
@@ -232,7 +281,7 @@ export default function StoriesPage() {
                   ))}
                 </div>
 
-                <div className="flex items-center justify-between text-sm text-gray-500">
+                <div className="flex items-center justify-between text-[10px] lg:text-sm text-gray-500">
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1">
                       <User className="h-3 w-3" />
@@ -244,7 +293,13 @@ export default function StoriesPage() {
                     </div>
                     <span>{story.publishedAt}</span>
                   </div>
-                  <Button variant="ghost" size="sm" className="text-emerald-700 hover:text-emerald-800">
+                </div>
+                <div className="flex items-center justify-end mt-3">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-emerald-700 hover:text-emerald-800 text-xs lg:text-sm"
+                  >
                     <BookOpen className="h-4 w-4 mr-1" />
                     Read Story
                   </Button>
@@ -257,10 +312,13 @@ export default function StoriesPage() {
 
       {/* Load More */}
       <div className="text-center">
-        <Button variant="outline" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 bg-transparent">
+        <Button
+          variant="outline"
+          className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 bg-transparent"
+        >
           Load More Stories
         </Button>
       </div>
     </div>
-  )
+  );
 }

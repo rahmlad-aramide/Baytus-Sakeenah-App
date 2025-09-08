@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,188 +19,375 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
 import { Heart, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
+
+const signupSchema = z
+  .object({
+    firstName: z.string().min(2, { message: "First name is too short" }),
+    lastName: z.string().min(2, { message: "Last name is too short" }),
+    email: z.string().email({ message: "Invalid email address" }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+    confirmPassword: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+    maritalStatus: z
+      .string()
+      .min(1, { message: "Please select your marital status" }),
+    interests: z.string().optional(),
+    terms: z.boolean().refine((val) => val === true, {
+      message: "You must accept the terms",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match",
+  });
+
+type SignupSchema = z.infer<typeof signupSchema>;
 
 export default function SignUpPage() {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const form = useForm<SignupSchema>({
+    resolver: zodResolver(signupSchema),
+    mode: "onChange",
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      maritalStatus: "",
+      interests: "",
+      terms: false,
+    },
+  });
+
+  const onSubmit = (values: SignupSchema) => {
+    console.log("Form submitted:", values);
+  };
   return (
     <>
-      <div className="p-5">
-        <Link
-          href="/"
-          className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to home
-        </Link>
-      </div>
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          {/* Header */}
-          <div className="text-center">
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
-                <Heart className="w-6 h-6 text-primary-foreground" />
+      <div className="min-h-screen bg-background">
+        <div className="p-5">
+          <Link
+            href="/"
+            className="inline-flex items-center text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to home
+          </Link>
+        </div>
+        <div className="flex items-center justify-center p-4">
+          <div className="w-full max-w-md">
+            {/* Header */}
+            <div className="text-center mb-7">
+              <div className="flex items-center justify-center space-x-2 mb-2">
+                <div className="w-10 h-8 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
+                  <Heart className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <span className="text-xl lg:text-2xl font-bold text-foreground">
+                  Baytus-Sakeenah
+                </span>
               </div>
-              <span className="text-2xl font-bold text-foreground">
-                Baytus-Sakeenah
-              </span>
+              <p className="text-muted-foreground text-sm lg:text-base">
+                Join our supportive Islamic community
+              </p>
             </div>
-            <p className="text-muted-foreground">
-              Join our supportive Islamic community
-            </p>
-          </div>
 
-          <Card className="border-border shadow-lg">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Create Account</CardTitle>
-              <CardDescription>
-                Join thousands of couples building stronger marriages
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <form className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input
-                      id="firstName"
-                      type="text"
-                      placeholder="Ahmed"
-                      required
-                      className="w-full"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input
-                      id="lastName"
-                      type="text"
-                      placeholder="Ali"
-                      required
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your.email@example.com"
-                    required
-                    className="w-full"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Create a strong password"
-                    required
-                    className="w-full"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="Confirm your password"
-                    required
-                    className="w-full"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="maritalStatus">Marital Status</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="single">
-                        Single (Preparing for marriage)
-                      </SelectItem>
-                      <SelectItem value="engaged">Engaged</SelectItem>
-                      <SelectItem value="newlywed">
-                        Newly married (0-2 years)
-                      </SelectItem>
-                      <SelectItem value="married">
-                        Married (2+ years)
-                      </SelectItem>
-                      <SelectItem value="mentor">
-                        Experienced couple (Mentor)
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="interests">
-                    What brings you here? (Optional)
-                  </Label>
-                  <Textarea
-                    id="interests"
-                    placeholder="e.g., Looking for marriage advice, want to share experiences, seeking Islamic guidance..."
-                    className="resize-none"
-                    rows={3}
-                  />
-                </div>
-
-                <div className="flex items-start space-x-2">
-                  <input
-                    id="terms"
-                    type="checkbox"
-                    required
-                    className="w-4 h-4 text-primary bg-background border-border rounded focus:ring-primary focus:ring-2 mt-1"
-                  />
-                  <Label
-                    htmlFor="terms"
-                    className="text-sm text-muted-foreground leading-relaxed"
-                  >
-                    I agree to the Terms of Service and Privacy Policy , and I
-                    commit to maintaining respectful Islamic values in this
-                    community.
-                  </Label>
-                </div>
-
-                <Button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
-                  size="lg"
-                >
+            <Card className="border-border shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl lg:text-2xl">
                   Create Account
-                </Button>
-              </form>
-
-              <Separator />
-
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground">
-                  Already have an account?{" "}
-                  <Link
-                    href="/login"
-                    className="text-primary hover:underline font-medium"
+                </CardTitle>
+                <CardDescription className="text-sm lg:text-base">
+                  Join thousands of couples building stronger marriages
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
                   >
-                    Login here
-                  </Link>
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+                    <div className="grid grid-cols-2 gap-4">
+                      {/* First Name */}
+                      <div className="space-y-3">
+                        <FormField
+                          control={form.control}
+                          name="firstName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <Label htmlFor="firstName">First Name</Label>
+                              <FormControl>
+                                <Input
+                                  placeholder="Ahmed"
+                                  {...field}
+                                  className="w-full"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
 
-          <div className="mt-8 text-center">
-            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-              Your privacy is important to us. We'll never share your personal
-              information and maintain strict Islamic guidelines for community
-              interactions.
-            </p>
+                      {/* Last Name */}
+                      <div className="space-y-3">
+                        <FormField
+                          control={form.control}
+                          name="lastName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <Label htmlFor="lastName">Last Name</Label>
+                              <FormControl>
+                                <Input
+                                  placeholder="Ali"
+                                  {...field}
+                                  className="w-full"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Email */}
+                    <div className="space-y-3">
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Label htmlFor="email">Email Address</Label>
+                            <FormControl>
+                              <Input
+                                placeholder="your.email@example.com"
+                                {...field}
+                                className="w-full"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Password */}
+                    <div className="space-y-3">
+                      <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Label htmlFor="password">Password</Label>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  className="w-full"
+                                  type={showPassword ? "text" : "password"}
+                                  placeholder="Create a strong password"
+                                  {...field}
+                                />
+                                <div
+                                  onClick={() => setShowPassword(!showPassword)}
+                                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400"
+                                >
+                                  {showPassword ? (
+                                    <EyeOff size={20} />
+                                  ) : (
+                                    <Eye size={20} />
+                                  )}
+                                </div>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Confirm Password */}
+                    <div className="space-y-3">
+                      <FormField
+                        control={form.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Label htmlFor="confirmPassword">
+                              Confirm Password
+                            </Label>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  className="w-full"
+                                  type={showPassword ? "text" : "password"}
+                                  placeholder="Confirm password"
+                                  {...field}
+                                />
+                                <div
+                                  onClick={() => setShowPassword(!showPassword)}
+                                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400"
+                                >
+                                  {showPassword ? (
+                                    <EyeOff size={20} />
+                                  ) : (
+                                    <Eye size={20} />
+                                  )}
+                                </div>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Marital Status */}
+                    <div className="space-y-3">
+                      <FormField
+                        control={form.control}
+                        name="maritalStatus"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Label htmlFor="maritalStatus">
+                              Marital Status
+                            </Label>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select your status" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="single">
+                                  Single (Preparing for marriage)
+                                </SelectItem>
+                                <SelectItem value="engaged">Engaged</SelectItem>
+                                <SelectItem value="newlywed">
+                                  Newly married (0-2 years)
+                                </SelectItem>
+                                <SelectItem value="married">
+                                  Married (2+ years)
+                                </SelectItem>
+                                <SelectItem value="mentor">
+                                  Experienced couple (Mentor)
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Interests */}
+                    <div className="space-y-3">
+                      <FormField
+                        control={form.control}
+                        name="interests"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Label htmlFor="interests">
+                              What brings you here? (Optional)
+                            </Label>
+                            <FormControl>
+                              <Textarea
+                                placeholder="e.g., Looking for marriage advice, want to share experiences, seeking Islamic guidance..."
+                                rows={3}
+                                className="resize-none"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="terms"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex items-start space-x-2">
+                            <FormControl>
+                              <input
+                                id="terms"
+                                type="checkbox"
+                                className="w-4 h-4 accent-primary rounded mt-1"
+                                checked={field.value}
+                                onChange={field.onChange}
+                              />
+                            </FormControl>
+                            <Label
+                              htmlFor="terms"
+                              className="flex-1 text-sm text-justify text-muted-foreground leading-relaxed"
+                            >
+                              I agree to the Terms of Service and Privacy
+                              Policy, and I commit to maintaining respectful
+                              Islamic values in this community.
+                            </Label>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
+                      size="lg"
+                    >
+                      Create Account
+                    </Button>
+                  </form>
+                </Form>
+
+                <Separator />
+
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Already have an account?{" "}
+                    <Link
+                      href="/login"
+                      className="text-primary hover:underline font-medium"
+                    >
+                      Login here
+                    </Link>
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="mt-8 text-center">
+              <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+                Your privacy is important to us. We'll never share your personal
+                information and maintain strict Islamic guidelines for community
+                interactions.
+              </p>
+            </div>
           </div>
         </div>
       </div>

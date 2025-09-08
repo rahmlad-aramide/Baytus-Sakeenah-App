@@ -1,31 +1,52 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Search, BookOpen, MessageCircle, Users, Clock, TrendingUp } from "lucide-react"
-import Link from "next/link"
+import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Search,
+  BookOpen,
+  MessageCircle,
+  Users,
+  Clock,
+  TrendingUp,
+} from "lucide-react";
+import Link from "next/link";
 
 interface SearchResult {
-  id: string
-  title: string
-  description: string
-  type: "article" | "question" | "user" | "topic"
-  category: string
-  url: string
-  relevance: number
-  tags?: string[]
-  author?: string
-  createdAt?: string
+  id: string;
+  title: string;
+  description: string;
+  type: "article" | "question" | "user" | "topic";
+  category: string;
+  url: string;
+  relevance: number;
+  tags?: string[];
+  author?: string;
+  createdAt?: string;
 }
 
 const mockSearchResults: SearchResult[] = [
   {
     id: "1",
     title: "Building Trust in Early Marriage: An Islamic Perspective",
-    description: "Learn how to establish deep trust and understanding in your marriage through Islamic teachings...",
+    description:
+      "Learn how to establish deep trust and understanding in your marriage through Islamic teachings...",
     type: "article",
     category: "Marriage Guidance",
     url: "/dashboard/content/1",
@@ -37,7 +58,8 @@ const mockSearchResults: SearchResult[] = [
   {
     id: "2",
     title: "How do I handle disagreements about spending with my spouse?",
-    description: "We often disagree about how to spend our money. I want to save more but my spouse likes to spend...",
+    description:
+      "We often disagree about how to spend our money. I want to save more but my spouse likes to spend...",
     type: "question",
     category: "Financial Matters",
     url: "/dashboard/qa/1",
@@ -49,7 +71,8 @@ const mockSearchResults: SearchResult[] = [
   {
     id: "3",
     title: "Effective Communication: The Prophetic Way",
-    description: "Discover how Prophet Muhammad (PBUH) communicated with his wives and apply these principles...",
+    description:
+      "Discover how Prophet Muhammad (PBUH) communicated with his wives and apply these principles...",
     type: "article",
     category: "Communication",
     url: "/dashboard/content/2",
@@ -58,82 +81,96 @@ const mockSearchResults: SearchResult[] = [
     author: "Sheikh Omar Abdullah",
     createdAt: "2024-01-12",
   },
-]
+];
 
-const recentSearches = ["trust in marriage", "financial planning", "communication", "in-law relations"]
+const recentSearches = [
+  "trust in marriage",
+  "financial planning",
+  "communication",
+  "in-law relations",
+];
 
 const popularTopics = [
   { name: "Marriage Guidance", count: 45 },
   { name: "Communication", count: 32 },
   { name: "Conflict Resolution", count: 28 },
   { name: "Financial Planning", count: 19 },
-]
+];
 
 interface GlobalSearchProps {
-  placeholder?: string
-  showRecentSearches?: boolean
+  placeholder?: string;
+  showRecentSearches?: boolean;
+  className?: string;
 }
 
 export function GlobalSearch({
   placeholder = "Search articles, questions, topics...",
+  className,
   showRecentSearches = true,
 }: GlobalSearchProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [query, setQuery] = useState("")
-  const [results, setResults] = useState<SearchResult[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (query.length > 2) {
-      setIsLoading(true)
+      setIsLoading(true);
       // Simulate API call
       setTimeout(() => {
         const filtered = mockSearchResults.filter(
           (result) =>
             result.title.toLowerCase().includes(query.toLowerCase()) ||
             result.description.toLowerCase().includes(query.toLowerCase()) ||
-            result.tags?.some((tag) => tag.toLowerCase().includes(query.toLowerCase())),
-        )
-        setResults(filtered)
-        setIsLoading(false)
-      }, 300)
+            result.tags?.some((tag) =>
+              tag.toLowerCase().includes(query.toLowerCase())
+            )
+        );
+        setResults(filtered);
+        setIsLoading(false);
+      }, 300);
     } else {
-      setResults([])
+      setResults([]);
     }
-  }, [query])
+  }, [query]);
 
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "article":
-        return <BookOpen className="w-4 h-4" />
+        return <BookOpen className="w-4 h-4" />;
       case "question":
-        return <MessageCircle className="w-4 h-4" />
+        return <MessageCircle className="w-4 h-4" />;
       case "user":
-        return <Users className="w-4 h-4" />
+        return <Users className="w-4 h-4" />;
       default:
-        return <Search className="w-4 h-4" />
+        return <Search className="w-4 h-4" />;
     }
-  }
+  };
 
   const getTypeColor = (type: string) => {
     switch (type) {
       case "article":
-        return "bg-blue-100 text-blue-800"
+        return "bg-blue-100 text-blue-800";
       case "question":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       case "user":
-        return "bg-purple-100 text-purple-800"
+        return "bg-purple-100 text-purple-800";
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800";
     }
-  }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input placeholder={placeholder} className="pl-10 cursor-pointer" readOnly onClick={() => setIsOpen(true)} />
+          <Input
+            placeholder={placeholder}
+            className={`pl-10 cursor-pointer ${className}`}
+            readOnly
+            onClick={() => setIsOpen(true)}
+          />
         </div>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden p-0">
@@ -198,8 +235,12 @@ export function GlobalSearch({
                   <CommandEmpty>
                     <div className="text-center py-6">
                       <Search className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-sm text-muted-foreground">No results found for "{query}"</p>
-                      <p className="text-xs text-muted-foreground mt-1">Try different keywords or browse categories</p>
+                      <p className="text-sm text-muted-foreground">
+                        No results found for "{query}"
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Try different keywords or browse categories
+                      </p>
                     </div>
                   </CommandEmpty>
                 )}
@@ -213,7 +254,11 @@ export function GlobalSearch({
                           className="flex items-start space-x-3 p-3 w-full hover:bg-muted/50 rounded-md"
                           onClick={() => setIsOpen(false)}
                         >
-                          <div className={`p-2 rounded-md ${getTypeColor(result.type)}`}>
+                          <div
+                            className={`p-2 rounded-md ${getTypeColor(
+                              result.type
+                            )}`}
+                          >
                             {getTypeIcon(result.type)}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -221,16 +266,27 @@ export function GlobalSearch({
                               <Badge variant="outline" className="text-xs">
                                 {result.category}
                               </Badge>
-                              <Badge variant="secondary" className="text-xs capitalize">
+                              <Badge
+                                variant="secondary"
+                                className="text-xs capitalize"
+                              >
                                 {result.type}
                               </Badge>
                             </div>
-                            <h4 className="font-medium text-foreground text-sm line-clamp-1">{result.title}</h4>
-                            <p className="text-xs text-muted-foreground line-clamp-2 mt-1">{result.description}</p>
+                            <h4 className="font-medium text-foreground text-sm line-clamp-1">
+                              {result.title}
+                            </h4>
+                            <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+                              {result.description}
+                            </p>
                             {result.tags && (
                               <div className="flex gap-1 mt-2">
                                 {result.tags.slice(0, 3).map((tag) => (
-                                  <Badge key={tag} variant="outline" className="text-xs">
+                                  <Badge
+                                    key={tag}
+                                    variant="outline"
+                                    className="text-xs"
+                                  >
                                     {tag}
                                   </Badge>
                                 ))}
@@ -248,5 +304,5 @@ export function GlobalSearch({
         </Command>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

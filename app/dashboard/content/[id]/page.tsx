@@ -1,10 +1,19 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
-import { Clock, Heart, Eye, Share2, Bookmark, ArrowLeft, MessageCircle, ThumbsUp } from "lucide-react"
-import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import {
+  Clock,
+  Heart,
+  Eye,
+  Share2,
+  Bookmark,
+  ArrowLeft,
+  MessageCircle,
+  ThumbsUp,
+} from "lucide-react";
+import Link from "next/link";
 
 // This would typically come from a database or API
 const article = {
@@ -74,13 +83,13 @@ const article = {
       readTime: "10 min read",
     },
   ],
-}
+};
 
 export default function ArticlePage({ params }: { params: { id: string } }) {
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="w-full lg:max-w-4xl mx-auto space-y-8 mt-17 lg:mt-0">
       {/* Back Navigation */}
-      <Button variant="ghost" asChild className="mb-4">
+      <Button variant="ghost" asChild className="mb-4 text-[10px] lg:text-base">
         <Link href="/dashboard/content">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Content Hub
@@ -93,15 +102,22 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
           <Badge variant="secondary" className="mb-4">
             {article.category}
           </Badge>
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance">{article.title}</h1>
-          <p className="text-xl text-muted-foreground text-pretty">{article.description}</p>
+          <h1 className="text-xl md:text-2xl lg:text-3xl md:text-4xl font-bold text-foreground mb-1 lg:mb-4 text-balance">
+            {article.title}
+          </h1>
+          <p className="text-sm md:text-base lg:text-xl text-muted-foreground text-pretty">
+            {article.description}
+          </p>
         </div>
 
         {/* Author and Meta Info */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 lg:gap-4">
           <div className="flex items-center space-x-4">
-            <Avatar className="h-12 w-12">
-              <AvatarImage src={article.author.avatar || "/placeholder.svg"} alt={article.author.name} />
+            <Avatar className="h-10 w-10 lg:h-12 lg:w-12">
+              <AvatarImage
+                src={article.author.avatar || "/placeholder.svg"}
+                alt={article.author.name}
+              />
               <AvatarFallback className="bg-primary/10 text-primary">
                 {article.author.name
                   .split(" ")
@@ -110,12 +126,16 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-semibold text-foreground">{article.author.name}</p>
-              <p className="text-sm text-muted-foreground">{article.author.bio}</p>
+              <p className="text-sm lg:text-base font-semibold text-foreground">
+                {article.author.name}
+              </p>
+              <p className="text-xs lg:text-sm text-muted-foreground">
+                {article.author.bio}
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-6 text-sm text-muted-foreground">
+          <div className="flex items-center space-x-6 text-[10px] lg:text-xs xl:text-sm text-muted-foreground">
             <span className="flex items-center">
               <Clock className="w-4 h-4 mr-1" />
               {article.readTime}
@@ -124,26 +144,44 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
               <Eye className="w-4 h-4 mr-1" />
               {article.views} views
             </span>
-            <span>Published {new Date(article.publishedAt).toLocaleDateString()}</span>
+            <span>
+              Published {new Date(article.publishedAt).toLocaleDateString()}
+            </span>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center space-x-4">
-          <Button variant="outline" size="sm">
-            <Heart className="w-4 h-4 mr-2" />
+        <div className="flex items-center space-x-1 lg:space-x-4">
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-[9px] md:text-sm lg:text-base"
+          >
+            <Heart className="w-4 h-4 lg:mr-2" />
             Like ({article.likes})
           </Button>
-          <Button variant="outline" size="sm">
-            <Bookmark className="w-4 h-4 mr-2" />
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-[9px] md:text-sm lg:text-base"
+          >
+            <Bookmark className="w-4 h-4 lg:mr-2" />
             Save
           </Button>
-          <Button variant="outline" size="sm">
-            <Share2 className="w-4 h-4 mr-2" />
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-[9px] md:text-sm lg:text-base"
+          >
+            <Share2 className="w-4 h-4 lg:mr-2" />
             Share
           </Button>
-          <Button variant="outline" size="sm">
-            <MessageCircle className="w-4 h-4 mr-2" />
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-[9px] md:text-sm lg:text-base"
+          >
+            <MessageCircle className="w-4 h-4 lg:mr-2" />
             Comment ({article.comments})
           </Button>
         </div>
@@ -152,8 +190,11 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
       <Separator />
 
       {/* Article Content */}
-      <div className="prose prose-lg max-w-none">
-        <div className="text-foreground leading-relaxed" dangerouslySetInnerHTML={{ __html: article.content }} />
+      <div className="prose prose-lg w-full lg:max-w-none">
+        <div
+          className="text-foreground leading-relaxed text-xs md:text-sm lg:text-base text-justify"
+          dangerouslySetInnerHTML={{ __html: article.content }}
+        />
       </div>
 
       {/* Tags */}
@@ -169,23 +210,35 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
 
       {/* Engagement Section */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="lg:pt-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-foreground">Was this article helpful?</h3>
+            <h3 className="text-sm lg:text-lg font-semibold text-foreground">
+              Was this article helpful?
+            </h3>
             <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm">
-                <ThumbsUp className="w-4 h-4 mr-2" />
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-[10px] lg:text-base"
+              >
+                <ThumbsUp className="w-4 h-4 lg:mr-2" />
                 Yes
               </Button>
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-[10px] lg:text-base"
+              >
                 No
               </Button>
             </div>
           </div>
 
           <div className="text-center">
-            <p className="text-muted-foreground mb-4">Share your thoughts or ask questions about this article</p>
-            <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90">
+            <p className="text-muted-foreground mb-4 text-sm lg:text-base">
+              Share your thoughts or ask questions about this article
+            </p>
+            <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-[10px] lg:text-base">
               Join the Discussion
             </Button>
           </div>
@@ -194,21 +247,36 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
 
       {/* Related Articles */}
       <div>
-        <h3 className="text-xl font-semibold text-foreground mb-6">Related Articles</h3>
+        <h3 className="text-base lg:text-xl font-semibold text-foreground mb-6">
+          Related Articles
+        </h3>
         <div className="grid md:grid-cols-2 gap-6">
           {article.relatedArticles.map((related) => (
-            <Card key={related.id} className="border-border hover:shadow-md transition-shadow">
+            <Card
+              key={related.id}
+              className="border-border hover:shadow-md transition-shadow"
+            >
               <CardHeader>
                 <Badge variant="secondary" className="w-fit">
                   {related.category}
                 </Badge>
-                <CardTitle className="text-lg">{related.title}</CardTitle>
+                <CardTitle className="text-sm lg:text-lg">
+                  {related.title}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">{related.readTime}</span>
-                  <Button size="sm" asChild>
-                    <Link href={`/dashboard/content/${related.id}`}>Read Article</Link>
+                  <span className="text-xs lg:text-sm text-muted-foreground">
+                    {related.readTime}
+                  </span>
+                  <Button
+                    className="text-[10px] lg:text-base"
+                    size="sm"
+                    asChild
+                  >
+                    <Link href={`/dashboard/content/${related.id}`}>
+                      Read Article
+                    </Link>
                   </Button>
                 </div>
               </CardContent>
@@ -217,5 +285,5 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

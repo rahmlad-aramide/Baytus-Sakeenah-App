@@ -37,8 +37,8 @@ export function DashboardHeader() {
           </Link>
         </div>
         {/* Search Bar */}
-        <div className="flex items-center justify-center space-x-4 flex-1 max-w-md ml-10 mr-3 md:ml-30 lg:ml-0 md:mr-0">
-          <GlobalSearch placeholder="Search articles, questions, stories..." />
+        <div className="flex items-center justify-center space-x-4 flex-1 max-w-md ml-10 mr-3 md:ml-30 lg:ml-0 md:mr-0 z-50 mt-1">
+          <GlobalSearch placeholder="Search articles, questions, stories..." className="placeholder:text-[10px] lg:placeholder:text-sm"  />
         </div>
 
         {/* User Actions */}

@@ -2,6 +2,7 @@
 
 import type React from "react";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,134 +11,183 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Heart, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { Form } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const loginSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters" }),
+});
+
+type LoginSchema = z.infer<typeof loginSchema>;
 
 export default function SignInPage() {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Form submission logic will be implemented here
-    console.log("Login form submitted");
+  const [remember, setRemember] = useState(false);
+
+  const form = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+  const onSubmit = (values: LoginSchema) => {
+    console.log("Login Details:", values);
   };
 
   return (
     <>
-      <div className="p-5">
-        <Link
-          href="/"
-          className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to home
-        </Link>
-      </div>
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          {/* Header */}
-          <div className="text-center">
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
-                <Heart className="w-6 h-6 text-primary-foreground" />
+      <div className="min-h-screen bg-background">
+        <div className="p-5">
+          <Link
+            href="/"
+            className="inline-flex items-center text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to home
+          </Link>
+        </div>
+        <div className="flex items-center justify-center p-4">
+          <div className="w-full max-w-md">
+            {/* Header */}
+            <div className="text-center mb-7">
+              <div className="flex items-center justify-center space-x-2 mb-2">
+                <div className="w-10 h-8 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
+                  <Heart className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <span className="text-xl lg:text-2xl font-bold text-foreground">
+                  Baytus-Sakeenah
+                </span>
               </div>
-              <span className="text-2xl font-bold text-foreground">
-                Baytus-Sakeenah
-              </span>
+              <p className="text-muted-foreground text-sm lg:text-base">
+                Welcome back to your House of Tranquility
+              </p>
             </div>
-            <p className="text-muted-foreground">
-              Welcome back to your house of tranquility
-            </p>
-          </div>
 
-          <Card className="border-border shadow-lg">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Login</CardTitle>
-              <CardDescription>
-                Enter your credentials to access your account
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <form className="space-y-4" onSubmit={handleSubmit}>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your.email@example.com"
-                    required
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    required
-                    className="w-full"
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <input
-                      id="remember"
-                      type="checkbox"
-                      className="w-4 h-4 text-primary bg-background border-border rounded focus:ring-primary focus:ring-2"
-                    />
-                    <Label
-                      htmlFor="remember"
-                      className="text-sm text-muted-foreground"
+            <Card className="border-border shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl lg:text-2xl">Login</CardTitle>
+                <CardDescription className="text-sm lg:text-base">
+                  Enter your credentials to access your account
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
+                  >
+                    <div className="space-y-3">
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Label htmlFor="email">Email Address</Label>
+                            <FormControl>
+                              <Input
+                                placeholder="your.email@example.com"
+                                {...field}
+                                className="w-full"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Label htmlFor="password">Password</Label>
+                            <FormControl>
+                              <Input
+                                id="password"
+                                type="password"
+                                placeholder="Enter your password"
+                                {...field}
+                                className="w-full"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          id="remember"
+                          type="checkbox"
+                          onClick={() => setRemember(!remember)}
+                          className="w-4 h-4 rounded accent-primary"
+                        />
+                        <Label
+                          htmlFor="remember"
+                          className="text-sm text-muted-foreground"
+                        >
+                          Remember me
+                        </Label>
+                      </div>
+                      <Link
+                        href="/forgot-password"
+                        className="text-sm text-primary hover:underline"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
+                    <Button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
+                      size="lg"
                     >
-                      Remember me
-                    </Label>
-                  </div>
-                  <Link
-                    href="/forgot-password"
-                    className="text-sm text-primary hover:underline"
-                  >
-                    Forgot password?
-                  </Link>
-                  <Link
-                    href="/dashboard"
-                    className="text-sm text-primary hover:underline"
-                  >
-                    Dashboard
-                  </Link>
+                      Login
+                    </Button>
+                  </form>
+                </Form>
+                <Separator />
+
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Don't have an account?{" "}
+                    <Link
+                      href="/signup"
+                      className="text-primary hover:underline font-medium"
+                    >
+                      Create one here
+                    </Link>
+                  </p>
                 </div>
-                <Button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
-                  size="lg"
-                >
-                  Login
-                </Button>
-              </form>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground">
-                  Don't have an account?{" "}
-                  <Link
-                    href="/signup"
-                    className="text-primary hover:underline font-medium"
-                  >
-                    Create one here
-                  </Link>
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="mt-8 text-center">
-            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-              By signing in, you agree to our Terms of Service and Privacy
-              Policy. We're committed to maintaining a respectful Islamic
-              community.
-            </p>
+            <div className="mt-8 text-center">
+              <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+                By signing in, you agree to our Terms of Service and Privacy
+                Policy. We're committed to maintaining a respectful Islamic
+                community.
+              </p>
+            </div>
           </div>
         </div>
       </div>

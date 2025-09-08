@@ -1,15 +1,30 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { MessageCircle, Search, Plus, TrendingUp, Clock, CheckCircle, Users, Eye } from "lucide-react"
-import Link from "next/link"
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  MessageCircle,
+  Search,
+  Plus,
+  TrendingUp,
+  Clock,
+  CheckCircle,
+  Users,
+  Eye,
+} from "lucide-react";
+import Link from "next/link";
 
 const categories = [
   { id: "all", name: "All Questions", count: 234 },
@@ -19,7 +34,7 @@ const categories = [
   { id: "financial-matters", name: "Financial Matters", count: 29 },
   { id: "in-law-relations", name: "In-Law Relations", count: 25 },
   { id: "islamic-guidance", name: "Islamic Guidance", count: 30 },
-]
+];
 
 const questions = [
   {
@@ -102,67 +117,76 @@ const questions = [
     createdAt: "2024-01-11",
     lastActivity: "2024-01-15",
   },
-]
+];
 
 export default function QAForumPage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("all")
-  const [sortBy, setSortBy] = useState("recent")
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [sortBy, setSortBy] = useState("recent");
 
   const filteredQuestions = questions.filter((question) => {
     const matchesSearch =
       question.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       question.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      question.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      question.tags.some((tag) =>
+        tag.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
     const matchesCategory =
-      selectedCategory === "all" || question.category.toLowerCase().replace(/\s+/g, "-") === selectedCategory
+      selectedCategory === "all" ||
+      question.category.toLowerCase().replace(/\s+/g, "-") === selectedCategory;
 
-    return matchesSearch && matchesCategory
-  })
+    return matchesSearch && matchesCategory;
+  });
 
   const sortedQuestions = [...filteredQuestions].sort((a, b) => {
     switch (sortBy) {
       case "popular":
-        return b.helpful - a.helpful
+        return b.helpful - a.helpful;
       case "most-answers":
-        return b.answers - a.answers
+        return b.answers - a.answers;
       case "recent":
       default:
-        return new Date(b.lastActivity).getTime() - new Date(a.lastActivity).getTime()
+        return (
+          new Date(b.lastActivity).getTime() -
+          new Date(a.lastActivity).getTime()
+        );
     }
-  })
+  });
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "answered":
-        return <CheckCircle className="w-4 h-4 text-green-600" />
+        return <CheckCircle className="w-4 h-4 text-green-600" />;
       case "open":
-        return <MessageCircle className="w-4 h-4 text-primary" />
+        return <MessageCircle className="w-4 h-4 text-primary" />;
       default:
-        return <MessageCircle className="w-4 h-4 text-muted-foreground" />
+        return <MessageCircle className="w-4 h-4 text-muted-foreground" />;
     }
-  }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "answered":
-        return "bg-green-100 text-green-800 border-green-200"
+        return "bg-green-100 text-green-800 border-green-200";
       case "open":
-        return "bg-blue-100 text-blue-800 border-blue-200"
+        return "bg-blue-100 text-blue-800 border-blue-200";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200"
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
-  }
+  };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 mt-17 lg:mt-0">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Q&A Forum</h1>
-          <p className="text-muted-foreground">
-            Ask questions anonymously and get advice from our supportive community
+          <h1 className="text-xl lg:text-2xl xl:text-3xl font-bold text-foreground mb-2">
+            Q&A Forum
+          </h1>
+          <p className="text-muted-foreground text-sm lg:text-base">
+            Ask questions anonymously and get advice from our supportive
+            community
           </p>
         </div>
         <Button
@@ -178,16 +202,19 @@ export default function QAForumPage() {
 
       {/* Community Guidelines */}
       <Card className="border-primary/20 bg-primary/5">
-        <CardContent className="pt-6">
+        <CardContent className="p-6">
           <div className="flex items-start space-x-3">
             <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
               <Users className="w-4 h-4 text-primary" />
             </div>
             <div>
-              <h3 className="font-semibold text-foreground mb-2">Community Guidelines</h3>
-              <p className="text-sm text-muted-foreground">
-                Please maintain Islamic values and respect in all interactions. Questions and answers should be helpful,
-                respectful, and appropriate for our community.
+              <h3 className="font-semibold text-foreground mb-2">
+                Community Guidelines
+              </h3>
+              <p className="text-xs lg:text-sm text-muted-foreground leading-snug lg:leading-normal text-justify lg:text-left">
+                Please maintain Islamic values and respect in all interactions.
+                Questions and answers should be helpful, respectful, and
+                appropriate for our community.
               </p>
             </div>
           </div>
@@ -196,17 +223,17 @@ export default function QAForumPage() {
 
       {/* Search and Filters */}
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
+        <div className="relative w-full md:flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
             placeholder="Search questions, topics, or tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="pl-10 placeholder:text-xs lg:placeholder:text-sm"
           />
         </div>
         <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-full md:w-48">
+          <SelectTrigger className="w-full md:w-48 text-xs lg:text-sm">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -217,92 +244,178 @@ export default function QAForumPage() {
         </Select>
       </div>
 
-      <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7">
+      <Tabs
+        value={selectedCategory}
+        onValueChange={setSelectedCategory}
+        className="w-full"
+      >
+        <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 lg:gap-2 h-full w-full">
           {categories.map((category) => (
-            <TabsTrigger key={category.id} value={category.id} className="text-xs">
+            <TabsTrigger
+              key={category.id}
+              value={category.id}
+              className="text-[10px] md:text-xs flex items-center justify-between"
+            >
               {category.name}
-              <Badge variant="secondary" className="ml-1 text-xs">
+              <Badge variant="secondary" className="text-[8px] md:text-xs">
                 {category.count}
               </Badge>
             </TabsTrigger>
           ))}
         </TabsList>
 
-        <TabsContent value={selectedCategory} className="mt-8">
+        <TabsContent value={selectedCategory} className="mt-6 lg:mt-8">
           {/* Questions List */}
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-foreground flex items-center">
+              <h2 className="text-base lg:text-xl font-semibold text-foreground flex items-center">
                 <TrendingUp className="w-5 h-5 mr-2 text-primary" />
-                {selectedCategory === "all" ? "All Questions" : categories.find((c) => c.id === selectedCategory)?.name}
-                <span className="ml-2 text-sm text-muted-foreground">({sortedQuestions.length} questions)</span>
+                {selectedCategory === "all"
+                  ? "All Questions"
+                  : categories.find((c) => c.id === selectedCategory)?.name}
+                <span className="ml-2 text-sm text-muted-foreground">
+                  ({sortedQuestions.length} questions)
+                </span>
               </h2>
             </div>
 
             <div className="space-y-4">
               {sortedQuestions.map((question) => (
-                <Card key={question.id} className="border-border hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="flex flex-col items-center space-y-2 flex-shrink-0">
+                <Card
+                  key={question.id}
+                  className="border-border hover:shadow-md transition-shadow"
+                >
+                  <CardContent className="px-6">
+                    <div className="flex flex-col md:flex-row items-start space-y-4 md:space-x-4 lg:space-x-6">
+                      <div className="hidden md:flex md:flex-col md:items-center space-x-4 md:space-x-0 md:space-y-2 flex-shrink-0">
                         <div className="text-center">
-                          <div className="text-lg font-semibold text-foreground">{question.answers}</div>
-                          <div className="text-xs text-muted-foreground">answers</div>
+                          <div className="text-xs lg:text-lg font-semibold text-foreground">
+                            {question.answers}
+                          </div>
+                          <div className="text-xs text-muted-foreground leading-tight lg:leading-normal">
+                            answers
+                          </div>
                         </div>
                         <div className="text-center">
-                          <div className="text-sm font-medium text-primary">{question.helpful}</div>
-                          <div className="text-xs text-muted-foreground">helpful</div>
+                          <div className="text-xs lg:text-sm font-medium text-primary">
+                            {question.helpful}
+                          </div>
+                          <div className="text-xs text-muted-foreground leading-tight lg:leading-normal">
+                            helpful
+                          </div>
                         </div>
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center gap-4 lg:gap-2 mb-2">
                           <Badge variant="secondary">{question.category}</Badge>
-                          <Badge variant="outline" className={getStatusColor(question.status)}>
+                          <Badge
+                            variant="outline"
+                            className={getStatusColor(question.status)}
+                          >
                             {getStatusIcon(question.status)}
-                            <span className="ml-1 capitalize">{question.status}</span>
+                            <span className="ml-1 capitalize">
+                              {question.status}
+                            </span>
                           </Badge>
                         </div>
 
-                        <h3 className="text-lg font-semibold text-foreground mb-2 hover:text-primary">
-                          <Link href={`/dashboard/qa/${question.id}`}>{question.title}</Link>
+                        <h3 className="text-sm lg:text-lg font-semibold text-foreground mb-2 hover:text-primary">
+                          <Link href={`/dashboard/qa/${question.id}`}>
+                            {question.title}
+                          </Link>
                         </h3>
 
-                        <p className="text-muted-foreground mb-4 line-clamp-2">{question.description}</p>
+                        <p className="text-xs lg:text-base text-muted-foreground mb-4 line-clamp-2">
+                          {question.description}
+                        </p>
 
                         <div className="flex flex-wrap gap-2 mb-4">
                           {question.tags.map((tag) => (
-                            <Badge key={tag} variant="outline" className="text-xs">
+                            <Badge
+                              key={tag}
+                              variant="outline"
+                              className="text-[11px] lg:text-xs"
+                            >
                               {tag}
                             </Badge>
                           ))}
                         </div>
 
-                        <div className="flex items-center justify-between text-sm text-muted-foreground">
+                        <div className="flex items-center justify-between text-xs lg:text-sm text-muted-foreground">
                           <div className="flex items-center space-x-4">
                             <div className="flex items-center">
                               <Avatar className="h-6 w-6 mr-2">
                                 <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                                  {question.isAnonymous ? "A" : question.author[0]}
+                                  {question.isAnonymous
+                                    ? "A"
+                                    : question.author[0]}
                                 </AvatarFallback>
                               </Avatar>
                               <span>{question.author}</span>
                             </div>
-                            <span className="flex items-center">
+                            <span className="hidden md:flex items-center">
                               <Eye className="w-3 h-3 mr-1" />
                               {question.views} views
                             </span>
                           </div>
-                          <div className="flex items-center space-x-4">
+                          <div className="hidden md:flex items-center space-x-4">
                             <span className="flex items-center">
                               <Clock className="w-3 h-3 mr-1" />
-                              {new Date(question.lastActivity).toLocaleDateString()}
+                              {new Date(
+                                question.lastActivity
+                              ).toLocaleDateString()}
                             </span>
                             <Button size="sm" asChild>
-                              <Link href={`/dashboard/qa/${question.id}`}>View Question</Link>
+                              <Link href={`/dashboard/qa/${question.id}`}>
+                                View Question
+                              </Link>
                             </Button>
                           </div>
+                        </div>
+
+                        <div className="md:hidden flex items-center flex-wrap space-x-3 text-muted-foreground mt-2">
+                          {/* Views */}
+                          <span className="flex items-center text-xs">
+                            <Eye className="w-3 h-3 mr-1" />
+                            {question.views} views
+                          </span>
+
+                          {/* Last Activity */}
+                          <span className="flex items-center text-xs">
+                            <Clock className="w-3 h-3 mr-1" />
+                            {new Date(
+                              question.lastActivity
+                            ).toLocaleDateString()}
+                          </span>
+
+                          {/* Answers & Helpful */}
+                          <div className="flex items-center space-x-3">
+                            <div className="flex flex-col items-center">
+                              <span className="text-xs font-semibold text-foreground">
+                                {question.answers}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground">
+                                answers
+                              </span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                              <span className="text-xs font-medium text-primary">
+                                {question.helpful}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground">
+                                helpful
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="md:hidden flex items-center justify-end mt-3">
+                          <Button className="text-[10px]" size="sm" asChild>
+                            <Link href={`/dashboard/qa/${question.id}`}>
+                              View Question
+                            </Link>
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -314,9 +427,12 @@ export default function QAForumPage() {
             {sortedQuestions.length === 0 && (
               <div className="text-center py-12">
                 <MessageCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">No questions found</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  No questions found
+                </h3>
                 <p className="text-muted-foreground mb-4">
-                  Try adjusting your search terms or browse different categories.
+                  Try adjusting your search terms or browse different
+                  categories.
                 </p>
                 <Button asChild>
                   <Link href="/dashboard/qa/ask">Ask the First Question</Link>
@@ -327,5 +443,5 @@ export default function QAForumPage() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

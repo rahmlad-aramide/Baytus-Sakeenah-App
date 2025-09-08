@@ -176,17 +176,17 @@ export default function ContentHubPage() {
 
       {/* Search and Filters */}
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative w-full max-w-xs md:flex-1">
+        <div className="relative w-full md:flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
             placeholder="Search articles, topics, or tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="pl-10 placeholder:text-xs lg:placeholder:text-sm"
           />
         </div>
         <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-full max-w-xs md:w-48">
+          <SelectTrigger className="w-full md:w-48 text-xs lg:text-sm">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -202,78 +202,83 @@ export default function ContentHubPage() {
         onValueChange={setSelectedCategory}
         className="w-full"
       >
-        <TabsList className="grid grid-cols-3 lg:grid-cols-7 lg:gap-2 h-full">
+        <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 lg:gap-2 h-full w-full">
           {categories.map((category) => (
             <TabsTrigger
               key={category.id}
               value={category.id}
-              className="text-[7px] md:text-xs flex items-center justify-between"
+              className="text-[10px] md:text-xs flex items-center justify-between"
             >
               {category.name}
-              <Badge variant="secondary" className="text-[6px] md:text-xs">
+              <Badge variant="secondary" className="text-[8px] md:text-xs">
                 {category.count}
               </Badge>
             </TabsTrigger>
           ))}
         </TabsList>
 
-        <TabsContent value={selectedCategory} className="mt-15 lg:mt-8">
+        <TabsContent value={selectedCategory} className="mt-5 lg:mt-8">
           {/* Featured Articles */}
           {selectedCategory === "all" && (
             <div className="mb-8">
-              <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center">
+              <h2 className="text-base lg:text-xl font-semibold text-foreground mb-4 flex items-center">
                 <Star className="w-5 h-5 mr-2 text-primary text-base lg:text-xl" />
                 Featured Articles
               </h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {featuredArticles.map((article) => (
                   <Card
                     key={article.id}
                     className="border-border hover:shadow-lg transition-shadow"
                   >
-                    <CardContent className="p-6">
-                      <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 rounded-t-lg flex items-center justify-center">
+                    <CardContent className="px-6">
+                      <div className="w-full h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg flex items-center justify-center flex-shrink-0">
                         <BookOpen className="w-8 h-8 text-primary" />
                       </div>
 
-                      <div className="flex items-center justify-between mt-3 mb-3">
-                        <Badge variant="secondary">{article.category}</Badge>
+                      <div className="flex items-center justify-between mt-5 mb-3">
+                        <Badge
+                          variant="secondary"
+                          className="text-xs xl:text-sm "
+                        >
+                          {article.category}
+                        </Badge>
                         <Badge
                           variant="outline"
-                          className="text-xs lg:text-sm text-primary border-primary"
+                          className="text-xs xl:text-sm text-primary border-primary"
                         >
                           Featured
                         </Badge>
                       </div>
-                      <CardTitle className="text-base lg:text-lg leading-tight">
+                      <CardTitle className="text-[15px] lg:text-base xl:text-lg leading-snug mb-2 text-justify">
                         {article.title}
                       </CardTitle>
-                      <CardDescription className="text-sm ">
+                      <CardDescription className="text-xs xl:text-sm text-justify">
                         {article.description}
                       </CardDescription>
 
                       <div className="flex items-center justify-between text-xs lg:text-sm text-muted-foreground mt-3">
                         <span>{article.author}</span>
                         <span>{article.readTime}</span>
-                        <div className="flex items-center space-x-4 text-[10px] lg:text-xs text-muted-foreground">
-                          <span className="flex items-center">
-                            <Eye className="w-3 h-3 mr-1" />
-                            {article.views}
-                          </span>
-                          <span className="flex items-center">
-                            <Heart className="w-3 h-3 mr-1" />
-                            {article.likes}
-                          </span>
-                        </div>
+                      </div>
+                      <div className="flex items-center space-x-4 text-[10px] lg:text-xs text-muted-foreground mt-2">
+                        <span className="flex items-center">
+                          <Eye className="w-3 h-3 mr-1" />
+                          {article.views}
+                        </span>
+                        <span className="flex items-center">
+                          <Heart className="w-3 h-3 mr-1" />
+                          {article.likes}
+                        </span>
                       </div>
                     </CardContent>
-                    <div className="flex items-center justify-end px-2">
-                      <Button size="sm" asChild>
-                        <Link href={`/dashboard/content/${article.id}`}>
-                          Read Article
-                        </Link>
-                      </Button>
-                    </div>
+                     <div className="flex items-center justify-end px-2">
+                    <Button className="text-[10px] md:text-sm lg:text-base" asChild>
+                      <Link href={`/dashboard/content/${article.id}`}>
+                        Read Article
+                      </Link>
+                    </Button>
+                  </div>
                   </Card>
                 ))}
               </div>
@@ -282,7 +287,7 @@ export default function ContentHubPage() {
 
           {/* All Articles */}
           <div>
-            <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center">
+            <h2 className="text-base lg:text-xl font-semibold text-foreground mb-4 flex items-center">
               <TrendingUp className="w-5 h-5 mr-2 text-primary" />
               {selectedCategory === "all"
                 ? "All Articles"
@@ -298,13 +303,13 @@ export default function ContentHubPage() {
                   key={article.id}
                   className="border-border hover:shadow-md transition-shadow"
                 >
-                  <CardContent className="p-6">
+                  <CardContent className="px-6">
                     <div className="flex flex-col md:flex-row gap-6">
                       <div className="w-full md:w-48 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg flex items-center justify-center flex-shrink-0">
                         <BookOpen className="w-8 h-8 text-primary" />
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
+                      <div>
+                        <div className="flex items-center justify-between gap-2 mb-2">
                           <Badge variant="secondary">{article.category}</Badge>
                           {article.featured && (
                             <Badge
@@ -315,10 +320,10 @@ export default function ContentHubPage() {
                             </Badge>
                           )}
                         </div>
-                        <h3 className="text-xl font-semibold text-foreground mb-2">
+                        <h3 className="text-[15px] lg:text-base xl:text-lg leading-snug text-foreground font-semibold text-justify mb-2">
                           {article.title}
                         </h3>
-                        <p className="text-muted-foreground mb-4 line-clamp-2">
+                        <p className="text-xs xl:text-sm text-muted-foreground mb-4 text-justify">
                           {article.description}
                         </p>
 
@@ -327,32 +332,32 @@ export default function ContentHubPage() {
                             <Badge
                               key={tag}
                               variant="outline"
-                              className="text-xs"
+                              className="text-[11px] lg:text-xs"
                             >
                               {tag}
                             </Badge>
                           ))}
                         </div>
 
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                            <span>{article.author}</span>
-                            <span>{article.readTime}</span>
-                            <span className="flex items-center">
-                              <Eye className="w-3 h-3 mr-1" />
-                              {article.views}
-                            </span>
-                            <span className="flex items-center">
-                              <Heart className="w-3 h-3 mr-1" />
-                              {article.likes}
-                            </span>
-                          </div>
+                        <div className="flex items-center justify-between lg:justify-start lg:gap-5 text-xs lg:text-sm text-muted-foreground mt-3">
+                          <span>{article.author}</span>
+                          <span>{article.readTime}</span>
+                        </div>
+                        <div className="flex items-center space-x-4 text-[10px] lg:text-xs text-muted-foreground mt-2">
+                          <span className="flex items-center">
+                            <Eye className="w-3 h-3 mr-1" />
+                            {article.views}
+                          </span>
+                          <span className="flex items-center">
+                            <Heart className="w-3 h-3 mr-1" />
+                            {article.likes}
+                          </span>
                         </div>
                       </div>
                     </div>
                   </CardContent>
-                  <div className="flex items-center justify-end">
-                    <Button asChild>
+                  <div className="flex items-center justify-end px-2">
+                    <Button className="text-[10px] md:text-sm lg:text-base" asChild>
                       <Link href={`/dashboard/content/${article.id}`}>
                         Read Article
                       </Link>
