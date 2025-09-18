@@ -276,7 +276,7 @@ export default function SignUpPage() {
                               defaultValue={field.value}
                             >
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                   <SelectValue placeholder="Select your status" />
                                 </SelectTrigger>
                               </FormControl>

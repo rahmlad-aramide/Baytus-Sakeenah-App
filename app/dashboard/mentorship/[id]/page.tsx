@@ -1,11 +1,25 @@
-import { ArrowLeft, Star, MessageCircle, Calendar, Clock, Heart, Shield } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import Link from "next/link"
+import {
+  ArrowLeft,
+  Star,
+  MessageCircle,
+  Calendar,
+  Clock,
+  Heart,
+  Shield,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Link from "next/link";
 
 // Mock data for mentor profile
 const mentor = {
@@ -13,7 +27,12 @@ const mentor = {
   name: "Ustadh Ahmad & Sister Khadijah",
   title: "Marriage Counselors",
   experience: "15 years married",
-  specialties: ["Communication", "Conflict Resolution", "Islamic Marriage Principles", "Financial Planning"],
+  specialties: [
+    "Communication",
+    "Conflict Resolution",
+    "Islamic Marriage Principles",
+    "Financial Planning",
+  ],
   rating: 4.9,
   reviews: 47,
   sessions: 156,
@@ -32,8 +51,14 @@ We believe that every marriage can thrive with the right guidance, patience, and
     { type: "Couple Session", duration: "90 minutes", price: "Free" },
     { type: "Follow-up Session", duration: "45 minutes", price: "Free" },
   ],
-  availableSlots: ["Today 3:00 PM", "Today 7:00 PM", "Tomorrow 10:00 AM", "Tomorrow 2:00 PM", "Tomorrow 6:00 PM"],
-}
+  availableSlots: [
+    "Today 3:00 PM",
+    "Today 7:00 PM",
+    "Tomorrow 10:00 AM",
+    "Tomorrow 2:00 PM",
+    "Tomorrow 6:00 PM",
+  ],
+};
 
 const reviews = [
   {
@@ -60,15 +85,19 @@ const reviews = [
     comment:
       "Very knowledgeable and compassionate mentors. They helped us work through communication issues with patience and understanding. The Islamic perspective they provided was exactly what we needed.",
   },
-]
+];
 
 export default function MentorProfilePage() {
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6 mt-17 lg:mt-0">
       {/* Back Navigation */}
       <div className="flex items-center gap-2">
         <Link href="/dashboard/mentorship">
-          <Button variant="ghost" size="sm" className="text-emerald-700 hover:text-emerald-800">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-emerald-700 hover:text-emerald-800"
+          >
             <ArrowLeft className="h-4 w-4 mr-1" />
             Back to Mentors
           </Button>
@@ -83,10 +112,15 @@ export default function MentorProfilePage() {
             <CardContent className="p-6">
               <div className="flex items-start gap-4">
                 <Avatar className="h-20 w-20">
-                  <AvatarImage src={mentor.image || "/placeholder.svg"} alt={mentor.name} />
+                  <AvatarImage
+                    src={mentor.image || "/placeholder.svg"}
+                    alt={mentor.name}
+                  />
                   <AvatarFallback className="bg-emerald-100 text-emerald-700 text-xl">
                     {mentor.name.split(" ")[0][0]}
-                    {mentor.name.split(" ")[1] ? mentor.name.split(" ")[1][0] : ""}
+                    {mentor.name.split(" ")[1]
+                      ? mentor.name.split(" ")[1][0]
+                      : ""}
                   </AvatarFallback>
                 </Avatar>
 
@@ -94,7 +128,9 @@ export default function MentorProfilePage() {
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <div className="flex items-center gap-2">
-                        <h1 className="text-2xl font-bold text-gray-900">{mentor.name}</h1>
+                        <h1 className="text-xl lg:text-2xl font-bold text-gray-900">
+                          {mentor.name}
+                        </h1>
                         {mentor.verified && (
                           <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200">
                             <Shield className="h-3 w-3 mr-1" />
@@ -102,17 +138,27 @@ export default function MentorProfilePage() {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-lg text-gray-600">{mentor.title}</p>
-                      <p className="text-sm text-gray-500">{mentor.experience}</p>
+                      <p className="text-sm lg:text-lg text-gray-600">
+                        {mentor.title}
+                      </p>
+                      <p className="text-xs lg:text-sm text-gray-500">
+                        {mentor.experience}
+                      </p>
                     </div>
 
                     <div className="text-right">
                       <div className="flex items-center gap-1 mb-1">
                         <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                        <span className="text-lg font-semibold">{mentor.rating}</span>
-                        <span className="text-gray-500">({mentor.reviews})</span>
+                        <span className="text-[10px] lg:text-lg font-semibold">
+                          {mentor.rating}
+                        </span>
+                        <span className="text-[10px] lg:text-base text-gray-500">
+                          ({mentor.reviews})
+                        </span>
                       </div>
-                      <p className="text-sm text-gray-500">{mentor.sessions} sessions completed</p>
+                      <p className="text-xs lg:text-sm text-gray-500">
+                        {mentor.sessions} sessions completed
+                      </p>
                     </div>
                   </div>
 
@@ -150,7 +196,9 @@ export default function MentorProfilePage() {
             </CardHeader>
             <CardContent>
               <div className="prose prose-gray max-w-none">
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line">{mentor.bio}</p>
+                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                  {mentor.bio}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -162,13 +210,20 @@ export default function MentorProfilePage() {
             </CardHeader>
             <CardContent className="space-y-4">
               {mentor.sessionTypes.map((session, index) => (
-                <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-4 border rounded-lg"
+                >
                   <div>
-                    <h4 className="font-medium text-gray-900">{session.type}</h4>
+                    <h4 className="font-medium text-gray-900">
+                      {session.type}
+                    </h4>
                     <p className="text-sm text-gray-600">{session.duration}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-emerald-700">{session.price}</p>
+                    <p className="font-semibold text-emerald-700">
+                      {session.price}
+                    </p>
                     <p className="text-xs text-gray-500">Community service</p>
                   </div>
                 </div>
@@ -187,20 +242,29 @@ export default function MentorProfilePage() {
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-                        <span className="text-emerald-700 text-sm font-medium">{review.author.split(" ")[0][0]}</span>
+                        <span className="text-emerald-700 text-sm font-medium">
+                          {review.author.split(" ")[0][0]}
+                        </span>
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">{review.author}</p>
+                        <p className="font-medium text-gray-900">
+                          {review.author}
+                        </p>
                         <div className="flex items-center gap-1">
                           {[...Array(review.rating)].map((_, i) => (
-                            <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                            <Star
+                              key={i}
+                              className="h-3 w-3 fill-yellow-400 text-yellow-400"
+                            />
                           ))}
                         </div>
                       </div>
                     </div>
                     <span className="text-sm text-gray-500">{review.date}</span>
                   </div>
-                  <p className="text-gray-700 leading-relaxed">{review.comment}</p>
+                  <p className="text-gray-700 leading-relaxed">
+                    {review.comment}
+                  </p>
                 </div>
               ))}
               <Button variant="outline" className="w-full bg-transparent">
@@ -240,7 +304,11 @@ export default function MentorProfilePage() {
             </CardHeader>
             <CardContent className="space-y-2">
               {mentor.availableSlots.map((slot, index) => (
-                <Button key={index} variant="outline" className="w-full justify-start text-left bg-transparent">
+                <Button
+                  key={index}
+                  variant="outline"
+                  className="w-full justify-start text-left bg-transparent"
+                >
                   <Clock className="h-4 w-4 mr-2" />
                   {slot}
                 </Button>
@@ -263,26 +331,35 @@ export default function MentorProfilePage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="general">General Question</SelectItem>
-                  <SelectItem value="communication">Communication Issues</SelectItem>
+                  <SelectItem value="communication">
+                    Communication Issues
+                  </SelectItem>
                   <SelectItem value="conflict">Conflict Resolution</SelectItem>
                   <SelectItem value="financial">Financial Planning</SelectItem>
                   <SelectItem value="family">Family Relations</SelectItem>
                 </SelectContent>
               </Select>
-              <Textarea placeholder="Briefly describe your situation or question..." className="min-h-[80px]" />
+              <Textarea
+                placeholder="Briefly describe your situation or question..."
+                className="min-h-[80px]"
+              />
               <Button className="w-full bg-gradient-to-r from-emerald-700 to-green-600 hover:from-emerald-800 hover:to-green-700">
                 Send Message
               </Button>
-              <p className="text-xs text-gray-500 text-center">Messages are private and follow Islamic guidelines</p>
+              <p className="text-xs text-gray-500 text-center">
+                Messages are private and follow Islamic guidelines
+              </p>
             </CardContent>
           </Card>
 
           {/* Guidelines */}
           <Card className="bg-emerald-50 border-emerald-200">
             <CardHeader>
-              <CardTitle className="text-emerald-800">Mentorship Guidelines</CardTitle>
+              <CardTitle className="text-emerald-800">
+                Mentorship Guidelines
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 text-sm text-emerald-700">
+            <CardContent className="space-y-2 text-xs lg:text-sm text-emerald-700">
               <p>• All sessions follow Islamic principles</p>
               <p>• Confidentiality is strictly maintained</p>
               <p>• Both spouses should participate when possible</p>
@@ -293,5 +370,5 @@ export default function MentorProfilePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

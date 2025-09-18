@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Textarea } from "@/components/ui/textarea"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
 import {
   ArrowLeft,
   ThumbsUp,
@@ -14,8 +14,8 @@ import {
   Clock,
   CheckCircle,
   Award,
-} from "lucide-react"
-import Link from "next/link"
+} from "lucide-react";
+import Link from "next/link";
 
 // This would typically come from a database or API
 const question = {
@@ -33,7 +33,7 @@ const question = {
   status: "answered",
   createdAt: "2024-01-15",
   lastActivity: "2024-01-16",
-}
+};
 
 const answers = [
   {
@@ -100,11 +100,15 @@ This gives structure while allowing both perspectives. The key is agreeing on wh
     isBestAnswer: false,
     authorBadge: "Verified Expert",
   },
-]
+];
 
-export default function QuestionDetailPage({ params }: { params: { id: string } }) {
+export default function QuestionDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8 mt-17 lg:mt-0">
       {/* Back Navigation */}
       <Button variant="ghost" asChild className="mb-4">
         <Link href="/dashboard/qa">
@@ -118,15 +122,22 @@ export default function QuestionDetailPage({ params }: { params: { id: string } 
         <CardHeader>
           <div className="flex items-center gap-2 mb-4">
             <Badge variant="secondary">{question.category}</Badge>
-            <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
+            <Badge
+              variant="outline"
+              className="bg-green-100 text-green-800 border-green-200"
+            >
               <CheckCircle className="w-3 h-3 mr-1" />
               Answered
             </Badge>
           </div>
-          <CardTitle className="text-2xl md:text-3xl text-balance">{question.title}</CardTitle>
+          <CardTitle className="text-xl md:text-2xl lg:text-3xl text-balance">
+            {question.title}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <p className="text-muted-foreground leading-relaxed">{question.description}</p>
+          <p className="text-sm lg:text-base text-muted-foreground leading-relaxed text-justify">
+            {question.description}
+          </p>
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
@@ -141,34 +152,36 @@ export default function QuestionDetailPage({ params }: { params: { id: string } 
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-4 border-t">
             <div className="flex items-center space-x-4">
               <div className="flex items-center">
-                <Avatar className="h-8 w-8 mr-2">
+                <Avatar className="h-6 w-6 lg:h-8 lg:w-8 mr-2">
                   <AvatarFallback className="bg-primary/10 text-primary">
                     {question.isAnonymous ? "A" : question.author[0]}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-sm text-muted-foreground">{question.author}</span>
+                <span className="text-[10px] lg:text-sm text-muted-foreground">
+                  {question.author}
+                </span>
               </div>
-              <span className="text-sm text-muted-foreground flex items-center">
+              <span className="text-[10px] lg:text-sm text-muted-foreground flex items-center">
                 <Clock className="w-3 h-3 mr-1" />
                 Asked {new Date(question.createdAt).toLocaleDateString()}
               </span>
-              <span className="text-sm text-muted-foreground flex items-center">
+              <span className="text-[10px] lg:text-sm text-muted-foreground flex items-center">
                 <Eye className="w-3 h-3 mr-1" />
                 {question.views} views
               </span>
             </div>
 
             <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm">
-                <ThumbsUp className="w-4 h-4 mr-2" />
+              <Button variant="outline" size="sm" className="text-[10px] md:text-sm lg:text-base">
+                <ThumbsUp className="w-4 h-4 lg:mr-2" />
                 Helpful ({question.helpful})
               </Button>
-              <Button variant="outline" size="sm">
-                <Share2 className="w-4 h-4 mr-2" />
+              <Button variant="outline" size="sm" className="text-[10px] md:text-sm lg:text-base">
+                <Share2 className="w-4 h-4 lg:mr-2" />
                 Share
               </Button>
-              <Button variant="outline" size="sm">
-                <Flag className="w-4 h-4 mr-2" />
+              <Button variant="outline" size="sm" className="text-[10px] md:text-sm lg:text-base">
+                <Flag className="w-4 h-4 lg:mr-2" />
                 Report
               </Button>
             </div>
@@ -179,7 +192,7 @@ export default function QuestionDetailPage({ params }: { params: { id: string } 
       {/* Answers Section */}
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-foreground">
+          <h2 className="text-base lg:text-xl font-semibold text-foreground">
             {answers.length} Answer{answers.length !== 1 ? "s" : ""}
           </h2>
         </div>
@@ -187,23 +200,29 @@ export default function QuestionDetailPage({ params }: { params: { id: string } 
         {answers.map((answer) => (
           <Card
             key={answer.id}
-            className={`border-border ${answer.isBestAnswer ? "border-green-200 bg-green-50/50" : ""}`}
+            className={`border-border ${
+              answer.isBestAnswer ? "border-green-200 bg-green-50/50" : ""
+            }`}
           >
             {answer.isBestAnswer && (
               <div className="bg-green-100 border-b border-green-200 px-6 py-3">
                 <div className="flex items-center text-green-800">
                   <Award className="w-4 h-4 mr-2" />
-                  <span className="text-sm font-medium">Best Answer</span>
+                  <span className="text-xs lg:text-sm font-medium">
+                    Best Answer
+                  </span>
                 </div>
               </div>
             )}
             <CardContent className="pt-6">
               <div className="space-y-4">
                 <div className="prose prose-sm max-w-none text-foreground">
-                  <div className="whitespace-pre-line leading-relaxed">{answer.content}</div>
+                  <div className="text-sm lg:text-base whitespace-pre-line leading-relaxed text-justify">
+                    {answer.content}
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t">
+                <div className="flex flex-col lg:flex-row items-center justify-between pt-4 border-t">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center">
                       <Avatar className="h-8 w-8 mr-2">
@@ -212,29 +231,34 @@ export default function QuestionDetailPage({ params }: { params: { id: string } 
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <span className="text-sm font-medium text-foreground">{answer.author}</span>
+                        <span className="text-sm font-medium text-foreground">
+                          {answer.author}
+                        </span>
                         {answer.authorBadge && (
-                          <Badge variant="outline" className="ml-2 text-xs">
+                          <Badge
+                            variant="outline"
+                            className="ml-2 text-xs"
+                          >
                             {answer.authorBadge}
                           </Badge>
                         )}
                       </div>
                     </div>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-xs lg:text-sm text-muted-foreground">
                       {new Date(answer.createdAt).toLocaleDateString()}
                     </span>
                   </div>
 
-                  <div className="flex items-center space-x-2">
-                    <Button variant="outline" size="sm">
-                      <ThumbsUp className="w-3 h-3 mr-1" />
+                  <div className="flex items-center space-x-5 lg:space-x-2 lg:text-xs mt-4 lg:mt-0">
+                    <Button variant="outline" size="sm" className="text-[10px] md:text-sm lg:text-base">
+                      <ThumbsUp className="w-3 h-3 lg:mr-1" />
                       {answer.helpful}
                     </Button>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="text-[10px] md:text-sm lg:text-base">
                       <ThumbsDown className="w-3 h-3" />
                     </Button>
-                    <Button variant="outline" size="sm">
-                      <MessageCircle className="w-3 h-3 mr-1" />
+                    <Button variant="outline" size="sm" className="text-[10px] md:text-sm lg:text-base">
+                      <MessageCircle className="w-3 h-3 lg:mr-1" />
                       Reply
                     </Button>
                   </div>
@@ -251,17 +275,22 @@ export default function QuestionDetailPage({ params }: { params: { id: string } 
           <CardTitle>Your Answer</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Textarea placeholder="Share your advice, experience, or Islamic guidance that might help..." rows={6} />
+          <Textarea
+            placeholder="Share your advice, experience, or Islamic guidance that might help..."
+            className="placeholder:text-xs"
+            rows={6}
+          />
           <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">
-              Please ensure your answer follows our community guidelines and Islamic values.
+            <p className="text-[10px] lg:text-sm text-muted-foreground ">
+              Please ensure your answer follows our community guidelines and
+              Islamic values.
             </p>
-            <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90">
+            <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-[10px] md:text-xs lg:text-base">
               Post Answer
             </Button>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
