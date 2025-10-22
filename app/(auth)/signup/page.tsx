@@ -31,9 +31,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, ArrowLeft } from "lucide-react";
+import { Heart, ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { Eye, EyeOff } from "lucide-react";
+
+import { useRegister } from "@/queries/auth";
+import { toast } from "sonner";
 
 const signupSchema = z
   .object({
@@ -79,9 +81,29 @@ export default function SignUpPage() {
     },
   });
 
+   const { mutate, isPending, isError, error } = useRegister({
+    onSuccess(_data, variables) {
+       toast.success("Registration successful! Please verify your email.");
+    form.reset();
+  },
+  onError(err: any) {
+    toast.error(err?.message || "Registration failed. Please try again.");
+  },
+});
+
   const onSubmit = (values: SignupSchema) => {
-    console.log("Form submitted:", values);
+  const payload = {
+    first_name: values.firstName,
+    last_name: values.lastName,
+    email: values.email,
+    password: values.password,
+    confirm_password: values.confirmPassword,
+    marital_status: values.maritalStatus,
   };
+
+  mutate(payload);
+};
+
   return (
     <>
       <div className="min-h-screen bg-background">
@@ -359,8 +381,10 @@ export default function SignUpPage() {
                       type="submit"
                       className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
                       size="lg"
+                      disabled={isPending}
                     >
-                      Create Account
+                    {isPending ? <Loader2 className="animate-spin" /> : "Create Account"}
+                      
                     </Button>
                   </form>
                 </Form>
