@@ -81,28 +81,30 @@ export default function SignUpPage() {
     },
   });
 
-   const { mutate, isPending, isError, error } = useRegister({
+  const { mutate, isPending } = useRegister({
     onSuccess(_data, variables) {
-       toast.success("Registration successful! Please verify your email.");
-    form.reset();
-  },
-  onError(err: any) {
-    toast.error(err?.message || "Registration failed. Please try again.");
-  },
-});
+      toast.success("Registration successful! Please verify your email.");
+      form.reset();
+    },
+    onError(err: any) {
+      toast.error(
+        err?.response?.data?.message || "Registration failed. Please try again."
+      );
+    },
+  });
 
   const onSubmit = (values: SignupSchema) => {
-  const payload = {
-    first_name: values.firstName,
-    last_name: values.lastName,
-    email: values.email,
-    password: values.password,
-    confirm_password: values.confirmPassword,
-    marital_status: values.maritalStatus,
-  };
+    const payload = {
+      first_name: values.firstName,
+      last_name: values.lastName,
+      email: values.email,
+      password: values.password,
+      confirm_password: values.confirmPassword,
+      marital_status: values.maritalStatus,
+    };
 
-  mutate(payload);
-};
+    mutate(payload);
+  };
 
   return (
     <>
@@ -383,8 +385,11 @@ export default function SignUpPage() {
                       size="lg"
                       disabled={isPending}
                     >
-                    {isPending ? <Loader2 className="animate-spin" /> : "Create Account"}
-                      
+                      {isPending ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        "Create Account"
+                      )}
                     </Button>
                   </form>
                 </Form>

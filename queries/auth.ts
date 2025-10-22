@@ -1,5 +1,4 @@
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
-import { authKeys } from "@/queries/query-keys";
 import { postLogin, postRegister } from "@/services/auth";
 import { AuthUser, ApiResponse, RegisterInput, LoginInput } from "@/types/auth";
 

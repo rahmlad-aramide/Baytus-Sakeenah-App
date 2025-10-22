@@ -17,15 +17,6 @@ http.interceptors.request.use((config) => {
 http.interceptors.response.use(
   (response) => response,
   async (error) => {
-    switch (error.response?.status) {
-      case 401:
-        if (
-          error.response.data.message === "Please verify your email first" ||
-          error.response.data.message === "Invalid Credentials"
-        ) {
-          return Promise.reject(error);
-        }
-    }
     return Promise.reject(error);
   }
 );
