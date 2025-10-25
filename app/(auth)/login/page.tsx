@@ -51,12 +51,13 @@ export default function SignInPage() {
 
   const { mutate, isPending } = useLogin({
     onSuccess(_data, variables) {
-      toast.success("Registration successful! Please verify your email.");
+      toast.success("Login successful! Redirecting...");
       form.reset();
     },
     onError(err: any) {
       toast.error(
-        err?.response?.data?.message || "Registration failed. Please try again."
+        err?.response?.data?.message ||
+          "Login failed. Please check your credentials."
       );
     },
   });

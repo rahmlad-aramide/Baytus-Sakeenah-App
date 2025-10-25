@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -53,10 +54,7 @@ export default function ForgotPasswordPage() {
   });
 
   const onSubmit = (values: ResetPasswordSchema) => {
-    const payload = {
-      email: values.email,
-    };
-    mutate(payload);
+    mutate(values);
   };
 
   return (

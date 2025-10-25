@@ -36,7 +36,7 @@ export async function postResetPassword(
 /* Verify reset token */
 export async function verifyResetToken(
   formData: VerifyResetInput
-): Promise<any> {
+): Promise<ApiResponse<null>> {
   const response = await http.post("/reset-password/verify", formData);
   return response.data;
 }
@@ -44,7 +44,7 @@ export async function verifyResetToken(
 /* Confirm new password */
 export async function confirmResetPassword(
   formData: ConfirmResetInput
-): Promise<any> {
+): Promise<ApiResponse<null>> {
   const response = await http.post("/reset-password/confirm", formData);
   return response.data;
 }

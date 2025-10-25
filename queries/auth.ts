@@ -79,7 +79,7 @@ export function useResetPassword(
 /* Verify Reset Token */
 export function useVerifyReset(
   options?: UseMutationOptions<
-    ApiResponse<AuthUser>,
+    ApiResponse<null>,
     Error,
     VerifyResetInput,
     unknown
@@ -98,7 +98,7 @@ export function useVerifyReset(
 /* Confirm New Password */
 export function useConfirmReset(
   options?: UseMutationOptions<
-    ApiResponse<AuthUser>,
+    ApiResponse<null>,
     Error,
     ConfirmResetInput,
     unknown

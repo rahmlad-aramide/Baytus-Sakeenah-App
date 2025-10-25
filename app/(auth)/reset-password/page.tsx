@@ -80,15 +80,14 @@ export default function ResetPasswordConfirmPage() {
     } else {
       router.push("/forgot-password");
     }
-  }, [email, token]);
+  }, [email, token, verifyToken, router]);
 
   const onSubmit = (values: ResetConfirmSchema) => {
     if (!email || !token) return toast.error("Invalid reset link");
     confirmReset({ email, token, ...values });
   };
 
-  // 1️⃣ Show loading state during token verification
-  if (verifying && !isVerified) {
+  if (!isVerified) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center space-y-4">
