@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -6,12 +8,55 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Heart, ArrowLeft, Mail } from "lucide-react";
+import { Heart, ArrowLeft, Mail, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useResetPassword } from "@/queries/auth";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
+const resetPasswordSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+});
+
+type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
 
 export default function ForgotPasswordPage() {
+  const router = useRouter();
+
+  const form = useForm<ResetPasswordSchema>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+
+  const { mutate, isPending } = useResetPassword({
+    onSuccess(_data, variables) {
+      toast.success("Password reset link sent successfully!");
+      form.reset();
+      router.push("/reset-password/sent");
+    },
+    onError(err: any) {
+      toast.error(err?.response?.data?.message || "Password reset failed!");
+    },
+  });
+
+  const onSubmit = (values: ResetPasswordSchema) => {
+    mutate(values);
+  };
+
   return (
     <>
       <div className="min-h-screen bg-background">
@@ -52,26 +97,48 @@ export default function ForgotPasswordPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <form className="space-y-6">
-                  <div className="space-y-3">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="your.email@example.com"
-                      required
-                      className="w-full py-5"
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
-                    size="lg"
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
                   >
-                    Send Reset Link
-                  </Button>
-                </form>
+                    <div className="space-y-3">
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Label htmlFor="email">Email Address</Label>
+                            <FormControl>
+                              <Input
+                                placeholder="your.email@example.com"
+                                {...field}
+                                className="w-full"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <Button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
+                      size="lg"
+                      disabled={isPending}
+                    >
+                      {isPending ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Sending...
+                        </span>
+                      ) : (
+                        "Send Reset Link"
+                      )}
+                    </Button>
+                  </form>
+                </Form>
 
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">

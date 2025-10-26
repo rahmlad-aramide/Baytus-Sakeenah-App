@@ -27,3 +27,19 @@ export interface LoginInput {
   username: string;
   password: string;
 }
+
+export interface ResetPasswordInput {
+  email: string;
+}
+
+export interface VerifyResetInput {
+  token: string;
+  email: string;
+}
+
+export interface ConfirmResetInput {
+  token: string;
+  email: string;
+  password: string;
+  confirm_password: string;
+}

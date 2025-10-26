@@ -1,7 +1,6 @@
-"use client"; // Added client directive to handle form interactions and prevent suspension errors
+"use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,12 +19,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Heart, ArrowLeft } from "lucide-react";
+import { Heart, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useLogin } from "@/queries/auth";
+import { toast } from "sonner";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -46,8 +47,27 @@ export default function SignInPage() {
       password: "",
     },
   });
+
+  const { mutate, isPending } = useLogin({
+    onSuccess(_data, variables) {
+      toast.success("Login successful! Redirecting...");
+      form.reset();
+    },
+    onError(err: any) {
+      toast.error(
+        err?.response?.data?.message ||
+          "Login failed. Please check your credentials."
+      );
+    },
+  });
+
   const onSubmit = (values: LoginSchema) => {
-    console.log("Login Details:", values);
+    const payload = {
+      username: values.email,
+      password: values.password,
+    };
+
+    mutate(payload);
   };
 
   return (
@@ -160,8 +180,13 @@ export default function SignInPage() {
                       type="submit"
                       className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
                       size="lg"
+                      disabled={isPending}
                     >
-                      Login
+                      {isPending ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        "Login"
+                      )}
                     </Button>
                   </form>
                 </Form>

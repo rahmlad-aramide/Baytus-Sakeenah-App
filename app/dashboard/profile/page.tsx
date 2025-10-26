@@ -1,49 +1,75 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
-import { Camera, Save, Shield, Bell, Heart, User } from "lucide-react"
+import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Camera, Save, Shield, Bell, Heart, User } from "lucide-react";
+import { useProfile, useUpdateProfile } from "@/queries/profile";
+import { toast } from "sonner";
 
 export default function ProfilePage() {
-  const [isEditing, setIsEditing] = useState(false)
-  const [profileData, setProfileData] = useState({
-    firstName: "Ahmed",
-    lastName: "Ali",
-    email: "ahmed.ali@example.com",
-    bio: "Seeking to strengthen my marriage through Islamic guidance and community support.",
-    maritalStatus: "married",
-    marriageDate: "2023-06-15",
-    location: "Lagos, Nigeria",
-    profileVisibility: "community",
-    emailNotifications: true,
-    mentorshipNotifications: true,
-    forumNotifications: false,
-  })
+  const [isEditing, setIsEditing] = useState(false);
+  const [profileData, setProfileData] = useState<any>({});
+  const { data, isLoading } = useProfile();
+
+  useEffect(() => {
+    if (data) {
+      setProfileData(data);
+    }
+  }, [data]);
+
+  const { mutate: updateProfile, isPending } = useUpdateProfile({
+    onSuccess() {
+      toast.success("Profile Updated successfully!");
+    },
+    onError(err: any) {
+      toast.error(
+        err?.response?.data?.message || "Failed to update your profile"
+      );
+    },
+  });
 
   const handleSave = () => {
-    // Save profile data
-    setIsEditing(false)
-    console.log("[v0] Profile saved:", profileData)
-  }
+    updateProfile(profileData);
+  };
 
   return (
-    <div className="space-y-8 max-w-4xl">
+    <div className="space-y-8 max-w-4xl mt-17 lg:mt-0">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Profile Settings</h1>
-          <p className="text-muted-foreground mt-1">Manage your personal information and preferences</p>
+          <h1 className="text-xl lg:text-3xl font-bold text-foreground">
+            Profile Settings
+          </h1>
+          <p className="text-sm lg:text-base text-muted-foreground mt-1">
+            Manage your personal information and preferences
+          </p>
         </div>
-        <Button onClick={() => setIsEditing(!isEditing)} variant={isEditing ? "outline" : "default"}>
+        <Button
+          className="text-xs lg:text-base"
+          onClick={() => setIsEditing(!isEditing)}
+          variant={isEditing ? "outline" : "default"}
+        >
           {isEditing ? "Cancel" : "Edit Profile"}
         </Button>
       </div>
@@ -57,8 +83,8 @@ export default function ProfilePage() {
                 <Avatar className="w-24 h-24 mx-auto">
                   <AvatarImage src="/muslim-user-avatar.png" alt="Profile" />
                   <AvatarFallback className="bg-primary/10 text-primary text-2xl">
-                    {profileData.firstName[0]}
-                    {profileData.lastName[0]}
+                    {profileData?.firstName?.[0] ?? "U"}
+                    {profileData?.lastName?.[0] ?? "S"}
                   </AvatarFallback>
                 </Avatar>
                 {isEditing && (
@@ -75,7 +101,9 @@ export default function ProfilePage() {
                 <h2 className="text-xl font-semibold text-foreground">
                   {profileData.firstName} {profileData.lastName}
                 </h2>
-                <p className="text-sm text-muted-foreground">{profileData.email}</p>
+                <p className="text-sm text-muted-foreground">
+                  {profileData.email}
+                </p>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -87,7 +115,9 @@ export default function ProfilePage() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Location</span>
-                <span className="text-sm text-foreground">{profileData.location}</span>
+                <span className="text-sm text-foreground">
+                  {profileData.location}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Joined</span>
@@ -103,19 +133,27 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Articles Read</span>
+                <span className="text-sm text-muted-foreground">
+                  Articles Read
+                </span>
                 <span className="font-medium text-foreground">23</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Questions Asked</span>
+                <span className="text-sm text-muted-foreground">
+                  Questions Asked
+                </span>
                 <span className="font-medium text-foreground">7</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Stories Shared</span>
+                <span className="text-sm text-muted-foreground">
+                  Stories Shared
+                </span>
                 <span className="font-medium text-foreground">2</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Helpful Votes</span>
+                <span className="text-sm text-muted-foreground">
+                  Helpful Votes
+                </span>
                 <span className="font-medium text-foreground">45</span>
               </div>
             </CardContent>
@@ -131,7 +169,9 @@ export default function ProfilePage() {
                 <User className="w-5 h-5 mr-2 text-primary" />
                 Personal Information
               </CardTitle>
-              <CardDescription>Your basic information used across the platform</CardDescription>
+              <CardDescription>
+                Your basic information used across the platform
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -140,7 +180,12 @@ export default function ProfilePage() {
                   <Input
                     id="firstName"
                     value={profileData.firstName}
-                    onChange={(e) => setProfileData({ ...profileData, firstName: e.target.value })}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        firstName: e.target.value,
+                      })
+                    }
                     disabled={!isEditing}
                   />
                 </div>
@@ -149,7 +194,12 @@ export default function ProfilePage() {
                   <Input
                     id="lastName"
                     value={profileData.lastName}
-                    onChange={(e) => setProfileData({ ...profileData, lastName: e.target.value })}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        lastName: e.target.value,
+                      })
+                    }
                     disabled={!isEditing}
                   />
                 </div>
@@ -160,7 +210,9 @@ export default function ProfilePage() {
                   id="email"
                   type="email"
                   value={profileData.email}
-                  onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                  onChange={(e) =>
+                    setProfileData({ ...profileData, email: e.target.value })
+                  }
                   disabled={!isEditing}
                 />
               </div>
@@ -170,7 +222,9 @@ export default function ProfilePage() {
                   id="bio"
                   placeholder="Tell the community a bit about yourself and your marriage journey..."
                   value={profileData.bio}
-                  onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
+                  onChange={(e) =>
+                    setProfileData({ ...profileData, bio: e.target.value })
+                  }
                   disabled={!isEditing}
                   rows={3}
                 />
@@ -185,7 +239,9 @@ export default function ProfilePage() {
                 <Heart className="w-5 h-5 mr-2 text-primary" />
                 Marriage Information
               </CardTitle>
-              <CardDescription>Help us provide more relevant content and connections</CardDescription>
+              <CardDescription>
+                Help us provide more relevant content and connections
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -193,14 +249,18 @@ export default function ProfilePage() {
                   <Label htmlFor="maritalStatus">Marital Status</Label>
                   <Select
                     value={profileData.maritalStatus}
-                    onValueChange={(value) => setProfileData({ ...profileData, maritalStatus: value })}
+                    onValueChange={(value) =>
+                      setProfileData({ ...profileData, maritalStatus: value })
+                    }
                     disabled={!isEditing}
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="single">Single (Preparing for Marriage)</SelectItem>
+                      <SelectItem value="single">
+                        Single (Preparing for Marriage)
+                      </SelectItem>
                       <SelectItem value="engaged">Engaged</SelectItem>
                       <SelectItem value="married">Married</SelectItem>
                       <SelectItem value="mentor">Mentor Couple</SelectItem>
@@ -213,7 +273,12 @@ export default function ProfilePage() {
                     id="marriageDate"
                     type="date"
                     value={profileData.marriageDate}
-                    onChange={(e) => setProfileData({ ...profileData, marriageDate: e.target.value })}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        marriageDate: e.target.value,
+                      })
+                    }
                     disabled={!isEditing}
                   />
                 </div>
@@ -225,7 +290,12 @@ export default function ProfilePage() {
                     id="location"
                     placeholder="City, Country"
                     value={profileData.location}
-                    onChange={(e) => setProfileData({ ...profileData, location: e.target.value })}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        location: e.target.value,
+                      })
+                    }
                     disabled={!isEditing}
                   />
                 </div>
@@ -240,23 +310,33 @@ export default function ProfilePage() {
                 <Shield className="w-5 h-5 mr-2 text-primary" />
                 Privacy Settings
               </CardTitle>
-              <CardDescription>Control who can see your information and activity</CardDescription>
+              <CardDescription>
+                Control who can see your information and activity
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="profileVisibility">Profile Visibility</Label>
                 <Select
                   value={profileData.profileVisibility}
-                  onValueChange={(value) => setProfileData({ ...profileData, profileVisibility: value })}
+                  onValueChange={(value) =>
+                    setProfileData({ ...profileData, profileVisibility: value })
+                  }
                   disabled={!isEditing}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="public">Public - Visible to everyone</SelectItem>
-                    <SelectItem value="community">Community - Visible to registered users</SelectItem>
-                    <SelectItem value="private">Private - Only visible to mentors</SelectItem>
+                    <SelectItem value="public">
+                      Public - Visible to everyone
+                    </SelectItem>
+                    <SelectItem value="community">
+                      Community - Visible to registered users
+                    </SelectItem>
+                    <SelectItem value="private">
+                      Private - Only visible to mentors
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -270,31 +350,51 @@ export default function ProfilePage() {
                 <Bell className="w-5 h-5 mr-2 text-primary" />
                 Notification Preferences
               </CardTitle>
-              <CardDescription>Choose what notifications you'd like to receive</CardDescription>
+              <CardDescription>
+                Choose what notifications you'd like to receive
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label htmlFor="emailNotifications">Email Notifications</Label>
-                  <p className="text-sm text-muted-foreground">Receive weekly digest and important updates</p>
+                  <Label htmlFor="emailNotifications">
+                    Email Notifications
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Receive weekly digest and important updates
+                  </p>
                 </div>
                 <Switch
                   id="emailNotifications"
                   checked={profileData.emailNotifications}
-                  onCheckedChange={(checked) => setProfileData({ ...profileData, emailNotifications: checked })}
+                  onCheckedChange={(checked) =>
+                    setProfileData({
+                      ...profileData,
+                      emailNotifications: checked,
+                    })
+                  }
                   disabled={!isEditing}
                 />
               </div>
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label htmlFor="mentorshipNotifications">Mentorship Updates</Label>
-                  <p className="text-sm text-muted-foreground">Notifications about mentor sessions and messages</p>
+                  <Label htmlFor="mentorshipNotifications">
+                    Mentorship Updates
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Notifications about mentor sessions and messages
+                  </p>
                 </div>
                 <Switch
                   id="mentorshipNotifications"
                   checked={profileData.mentorshipNotifications}
-                  onCheckedChange={(checked) => setProfileData({ ...profileData, mentorshipNotifications: checked })}
+                  onCheckedChange={(checked) =>
+                    setProfileData({
+                      ...profileData,
+                      mentorshipNotifications: checked,
+                    })
+                  }
                   disabled={!isEditing}
                 />
               </div>
@@ -302,12 +402,19 @@ export default function ProfilePage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label htmlFor="forumNotifications">Forum Activity</Label>
-                  <p className="text-sm text-muted-foreground">Notifications when someone responds to your questions</p>
+                  <p className="text-sm text-muted-foreground">
+                    Notifications when someone responds to your questions
+                  </p>
                 </div>
                 <Switch
                   id="forumNotifications"
                   checked={profileData.forumNotifications}
-                  onCheckedChange={(checked) => setProfileData({ ...profileData, forumNotifications: checked })}
+                  onCheckedChange={(checked) =>
+                    setProfileData({
+                      ...profileData,
+                      forumNotifications: checked,
+                    })
+                  }
                   disabled={!isEditing}
                 />
               </div>
@@ -320,14 +427,24 @@ export default function ProfilePage() {
               <Button variant="outline" onClick={() => setIsEditing(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleSave} className="bg-gradient-to-r from-primary to-secondary">
-                <Save className="w-4 h-4 mr-2" />
-                Save Changes
+              <Button
+                onClick={handleSave}
+                disabled={isPending}
+                className="bg-gradient-to-r from-primary to-secondary"
+              >
+                {isPending ? (
+                  "Saving..."
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    Save Changes
+                  </>
+                )}
               </Button>
             </div>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }

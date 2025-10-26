@@ -33,7 +33,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
 import { Heart, ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
-
 import { useRegister } from "@/queries/auth";
 import { toast } from "sonner";
 
