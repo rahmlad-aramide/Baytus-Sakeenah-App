@@ -1,7 +1,6 @@
-"use client"; // Added client directive to handle form interactions and prevent suspension errors
+"use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
