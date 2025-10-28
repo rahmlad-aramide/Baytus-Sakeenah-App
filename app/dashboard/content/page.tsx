@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -35,41 +35,50 @@ export default function ContentHubPage() {
 
   // 🔹 Fetch both endpoints
   const { data: publicData } = useArticles();
-  const { data: managedData, isLoading, error, refetch } = useManagedArticles();
+  const { data: managedData, isLoading, error } = useManagedArticles();
 
-  // If backend returns arrays (not paginated objects)
-  const allArticles = [
-    ...(managedData?.results ?? []),
-    ...(publicData?.results ?? []),
-  ];
+  const managedResults = Array.isArray(managedData?.results)
+    ? managedData.results
+    : [];
+  const publicResults = Array.isArray(publicData?.results)
+    ? publicData.results
+    : [];
+
+  const allArticles = [...managedResults, ...publicResults];
 
   const { mutate: createArticle, isPending } = usePostArticle({
-    onSuccess: () => {
-      toast.success("Article created successfully!");
-      refetch();
-    },
-    onError: () => {
-      toast.error("Failed to create article");
+    onSuccess: () => toast.success("Article created successfully!"),
+    onError: (error: any) => {
+      console.error("Create article error:", error);
+      toast.error(error.response?.data?.detail || "Failed to create article");
     },
   });
 
   if (isLoading) {
-    return <div className="text-center py-10 px-10 mt-17 lg:mt-0">Loading articles...</div>;
+    return (
+      <div className="text-center py-10 px-10 mt-17 lg:mt-0">
+        Loading articles...
+      </div>
+    );
   }
 
   if (error) {
+    console.error("Error fetching articles:", error);
     return (
       <div className="text-red-500 text-center py-10 mt-17 lg:mt-0">
-        Failed to load articles
+        Failed to load articles. Please check your network or login status.
       </div>
     );
   }
 
   // 🔹 Filtering
   const filteredArticles = allArticles.filter((article: any) => {
+    const title = article.title?.toLowerCase() || "";
+    const excerpt = article.excerpt?.toLowerCase() || "";
     const matchesSearch =
-      article.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.excerpt?.toLowerCase().includes(searchQuery.toLowerCase());
+      title.includes(searchQuery.toLowerCase()) ||
+      excerpt.includes(searchQuery.toLowerCase());
+
     const matchesCategory =
       selectedCategory === "all" ||
       article.category_detail?.name === selectedCategory;
@@ -79,10 +88,16 @@ export default function ContentHubPage() {
   // 🔹 Sorting
   const sortedArticles = [...filteredArticles].sort((a, b) => {
     if (sortBy === "popular") return b.view_count - a.view_count;
-    if (sortBy === "rating")
-      return (b.average_rating ?? 0) - (a.average_rating ?? 0);
-    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    const getRating = (x: any) => x.average_rating || 0;
+    if (sortBy === "rating") return getRating(b) - getRating(a);
+    return new Date(b.created).getTime() - new Date(a.created).getTime(); // recent
   });
+
+  // 🔹 Unique Categories (memoized)
+  const uniqueCategories = useMemo(() => {
+    const names = allArticles.map((a) => a.category_detail?.name || "");
+    return [...new Set(names)].filter(Boolean);
+  }, [allArticles]);
 
   return (
     <div className="space-y-8 mt-17 lg:mt-0">
@@ -135,13 +150,11 @@ export default function ContentHubPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
-            {[...new Set(allArticles.map((a) => a.category_detail?.name || ""))]
-              .filter(Boolean)
-              .map((cat) => (
-                <SelectItem key={cat} value={cat}>
-                  {cat}
-                </SelectItem>
-              ))}
+            {uniqueCategories.map((cat) => (
+              <SelectItem key={cat} value={cat}>
+                {cat}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
 
@@ -152,7 +165,7 @@ export default function ContentHubPage() {
           <SelectContent>
             <SelectItem value="recent">Most Recent</SelectItem>
             <SelectItem value="popular">Most Popular</SelectItem>
-            <SelectItem value="liked">Most Liked</SelectItem>
+            <SelectItem value="rating">Top Rated</SelectItem>
           </SelectContent>
         </Select>
       </div>
