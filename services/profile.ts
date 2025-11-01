@@ -8,7 +8,7 @@ export async function getProfile(): Promise<ApiResponse<ProfileResponse>> {
   return response.data;
 }
 
-/* Get Profile */
+/* Update Profile */
 export async function updateProfile(
   formData: EditProfileInput
 ): Promise<ApiResponse<ProfileResponse>> {

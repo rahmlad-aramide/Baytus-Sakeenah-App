@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -19,147 +19,85 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BookOpen, Heart, Search, Star, Eye, TrendingUp } from "lucide-react";
+import { Heart, Search, Star, Eye, TrendingUp } from "lucide-react";
 import Link from "next/link";
-
-const categories = [
-  { id: "all", name: "All Content", count: 156 },
-  { id: "marriage-guidance", name: "Marriage Guidance", count: 45 },
-  { id: "communication", name: "Communication", count: 32 },
-  { id: "conflict-resolution", name: "Conflict Resolution", count: 28 },
-  { id: "financial-planning", name: "Financial Planning", count: 19 },
-  { id: "in-law-relations", name: "In-Law Relations", count: 15 },
-  { id: "islamic-principles", name: "Islamic Principles", count: 17 },
-];
-
-const articles = [
-  {
-    id: 1,
-    title: "Building Trust in Early Marriage: An Islamic Perspective",
-    description:
-      "Learn how to establish deep trust and understanding in your marriage through Islamic teachings and practical advice.",
-    category: "Marriage Guidance",
-    author: "Dr. Amina Hassan",
-    readTime: "8 min read",
-    views: 1247,
-    likes: 89,
-    image: "/islamic-couple-trust.jpg",
-    tags: ["Trust", "Early Marriage", "Islamic Guidance"],
-    featured: true,
-    publishedAt: "2024-01-15",
-  },
-  {
-    id: 2,
-    title: "Effective Communication: The Prophetic Way",
-    description:
-      "Discover how Prophet Muhammad (PBUH) communicated with his wives and apply these principles in your marriage.",
-    category: "Communication",
-    author: "Sheikh Omar Abdullah",
-    readTime: "6 min read",
-    views: 892,
-    likes: 67,
-    image: "/prophetic-communication.jpg",
-    tags: ["Communication", "Sunnah", "Marriage"],
-    featured: false,
-    publishedAt: "2024-01-12",
-  },
-  {
-    id: 3,
-    title: "Resolving Conflicts with Patience and Wisdom",
-    description:
-      "Islamic approaches to handling disagreements and conflicts in marriage with patience and understanding.",
-    category: "Conflict Resolution",
-    author: "Sister Fatima Al-Zahra",
-    readTime: "10 min read",
-    views: 756,
-    likes: 54,
-    image: "/conflict-resolution.jpg",
-    tags: ["Conflict", "Patience", "Wisdom"],
-    featured: true,
-    publishedAt: "2024-01-10",
-  },
-  {
-    id: 4,
-    title: "Financial Harmony: Islamic Principles for Couples",
-    description:
-      "Managing finances as a Muslim couple according to Islamic principles and modern practical advice.",
-    category: "Financial Planning",
-    author: "Dr. Yusuf Ibrahim",
-    readTime: "12 min read",
-    views: 634,
-    likes: 43,
-    image: "/islamic-finance.jpg",
-    tags: ["Finance", "Islamic Banking", "Planning"],
-    featured: false,
-    publishedAt: "2024-01-08",
-  },
-  {
-    id: 5,
-    title: "Navigating In-Law Relationships with Grace",
-    description:
-      "Building positive relationships with in-laws while maintaining your marriage bond, guided by Islamic values.",
-    category: "In-Law Relations",
-    author: "Sister Aisha Malik",
-    readTime: "7 min read",
-    views: 523,
-    likes: 38,
-    image: "/in-law-relations.jpg",
-    tags: ["In-Laws", "Family", "Relationships"],
-    featured: false,
-    publishedAt: "2024-01-05",
-  },
-  {
-    id: 6,
-    title: "The Rights and Responsibilities of Spouses in Islam",
-    description:
-      "Understanding the balanced approach Islam takes to marriage rights and responsibilities for both partners.",
-    category: "Islamic Principles",
-    author: "Dr. Muhammad Al-Faqih",
-    readTime: "15 min read",
-    views: 1156,
-    likes: 92,
-    image: "/islamic-marriage-rights.jpg",
-    tags: ["Rights", "Responsibilities", "Islamic Law"],
-    featured: true,
-    publishedAt: "2024-01-03",
-  },
-];
+import {
+  useArticles,
+  useManagedArticles,
+  usePostArticle,
+} from "@/queries/article";
+import { toast } from "sonner";
 
 export default function ContentHubPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("recent");
 
-  const filteredArticles = articles.filter((article) => {
+  // 🔹 Fetch both endpoints
+  const { data: publicData } = useArticles();
+  const { data: managedData, isLoading, error } = useManagedArticles();
+
+  const managedResults = Array.isArray(managedData?.results)
+    ? managedData.results
+    : [];
+  const publicResults = Array.isArray(publicData?.results)
+    ? publicData.results
+    : [];
+
+  const allArticles = [...managedResults, ...publicResults];
+
+  const { mutate: createArticle, isPending } = usePostArticle({
+    onSuccess: () => toast.success("Article created successfully!"),
+    onError: (error: any) => {
+      console.error("Create article error:", error);
+      toast.error(error.response?.data?.detail || "Failed to create article");
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-10 px-10 mt-17 lg:mt-0">
+        Loading articles...
+      </div>
+    );
+  }
+
+  if (error) {
+    console.error("Error fetching articles:", error);
+    return (
+      <div className="text-red-500 text-center py-10 mt-17 lg:mt-0">
+        Failed to load articles. Please check your network or login status.
+      </div>
+    );
+  }
+
+  // 🔹 Filtering
+  const filteredArticles = allArticles.filter((article: any) => {
+    const title = article.title?.toLowerCase() || "";
+    const excerpt = article.excerpt?.toLowerCase() || "";
     const matchesSearch =
-      article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.tags.some((tag) =>
-        tag.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      title.includes(searchQuery.toLowerCase()) ||
+      excerpt.includes(searchQuery.toLowerCase());
 
     const matchesCategory =
       selectedCategory === "all" ||
-      article.category.toLowerCase().replace(/\s+/g, "-") === selectedCategory;
-
+      article.category_detail?.name === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
+  // 🔹 Sorting
   const sortedArticles = [...filteredArticles].sort((a, b) => {
-    switch (sortBy) {
-      case "popular":
-        return b.views - a.views;
-      case "liked":
-        return b.likes - a.likes;
-      case "recent":
-      default:
-        return (
-          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-        );
-    }
+    if (sortBy === "popular") return b.view_count - a.view_count;
+    const getRating = (x: any) => x.average_rating || 0;
+    if (sortBy === "rating") return getRating(b) - getRating(a);
+    return new Date(b.created).getTime() - new Date(a.created).getTime(); // recent
   });
 
-  const featuredArticles = articles.filter((article) => article.featured);
+  // 🔹 Unique Categories (memoized)
+  const uniqueCategories = useMemo(() => {
+    const names = allArticles.map((a) => a.category_detail?.name || "");
+    return [...new Set(names)].filter(Boolean);
+  }, [allArticles]);
 
   return (
     <div className="space-y-8 mt-17 lg:mt-0">
@@ -172,6 +110,26 @@ export default function ContentHubPage() {
           Discover Islamic guidance, practical advice, and wisdom for
           strengthening your marriage
         </p>
+
+        <Button
+          onClick={() =>
+            createArticle({
+              title: "New Untitled Article",
+              content: "Start writing your new article...",
+              category: 1,
+              status: "draft",
+              tags: [],
+              excerpt: "",
+              is_published: false,
+              is_featured: false,
+              meta_title: "New Article",
+              meta_description: "An auto-generated article draft",
+            })
+          }
+          disabled={isPending}
+        >
+          {isPending ? "Creating..." : "New Article"}
+        </Button>
       </div>
 
       {/* Search and Filters */}
@@ -185,200 +143,93 @@ export default function ContentHubPage() {
             className="pl-10 placeholder:text-xs lg:placeholder:text-sm"
           />
         </div>
-        <Select value={sortBy} onValueChange={setSortBy}>
+
+        <Select onValueChange={setSelectedCategory}>
+          <SelectTrigger className="w-[160px]">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            {uniqueCategories.map((cat) => (
+              <SelectItem key={cat} value={cat}>
+                {cat}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select onValueChange={setSortBy}>
           <SelectTrigger className="w-full md:w-48 text-xs lg:text-sm">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="recent">Most Recent</SelectItem>
             <SelectItem value="popular">Most Popular</SelectItem>
-            <SelectItem value="liked">Most Liked</SelectItem>
+            <SelectItem value="rating">Top Rated</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      <Tabs
-        value={selectedCategory}
-        onValueChange={setSelectedCategory}
-        className="w-full"
-      >
-        <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 lg:gap-2 h-full w-full">
-          {categories.map((category) => (
-            <TabsTrigger
-              key={category.id}
-              value={category.id}
-              className="text-[10px] md:text-xs flex items-center justify-between"
-            >
-              {category.name}
-              <Badge variant="secondary" className="text-[8px] md:text-xs">
-                {category.count}
-              </Badge>
-            </TabsTrigger>
-          ))}
+      {/* Tabs */}
+      <Tabs defaultValue="all" className="w-full">
+        <TabsList>
+          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="featured">Featured</TabsTrigger>
+          <TabsTrigger value="trending">Trending</TabsTrigger>
         </TabsList>
 
-        <TabsContent value={selectedCategory} className="mt-5 lg:mt-8">
-          {/* Featured Articles */}
-          {selectedCategory === "all" && (
-            <div className="mb-8">
-              <h2 className="text-base lg:text-xl font-semibold text-foreground mb-4 flex items-center">
-                <Star className="w-5 h-5 mr-2 text-primary text-base lg:text-xl" />
-                Featured Articles
-              </h2>
-              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {featuredArticles.map((article) => (
-                  <Card
-                    key={article.id}
-                    className="border-border hover:shadow-lg transition-shadow"
-                  >
-                    <CardContent className="px-6">
-                      <div className="w-full h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <BookOpen className="w-8 h-8 text-primary" />
-                      </div>
+        <TabsContent value="all" className="pt-6">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {sortedArticles.map((article: any) => (
+              <Card
+                key={article.id}
+                className="hover:shadow-lg transition-all duration-200 border border-gray-200"
+              >
+                <CardHeader>
+                  <CardTitle className="line-clamp-1">
+                    {article.title}
+                  </CardTitle>
+                  <CardDescription className="line-clamp-2">
+                    {article.excerpt ?? "No description available"}
+                  </CardDescription>
+                </CardHeader>
 
-                      <div className="flex items-center justify-between mt-5 mb-3">
-                        <Badge
-                          variant="secondary"
-                          className="text-xs xl:text-sm "
-                        >
-                          {article.category}
-                        </Badge>
-                        <Badge
-                          variant="outline"
-                          className="text-xs xl:text-sm text-primary border-primary"
-                        >
-                          Featured
-                        </Badge>
-                      </div>
-                      <CardTitle className="text-[15px] lg:text-base xl:text-lg leading-snug mb-2 text-justify">
-                        {article.title}
-                      </CardTitle>
-                      <CardDescription className="text-xs xl:text-sm text-justify">
-                        {article.description}
-                      </CardDescription>
-
-                      <div className="flex items-center justify-between text-xs lg:text-sm text-muted-foreground mt-3">
-                        <span>{article.author}</span>
-                        <span>{article.readTime}</span>
-                      </div>
-                      <div className="flex items-center space-x-4 text-[10px] lg:text-xs text-muted-foreground mt-2">
-                        <span className="flex items-center">
-                          <Eye className="w-3 h-3 mr-1" />
-                          {article.views}
-                        </span>
-                        <span className="flex items-center">
-                          <Heart className="w-3 h-3 mr-1" />
-                          {article.likes}
-                        </span>
-                      </div>
-                    </CardContent>
-                     <div className="flex items-center justify-end px-2">
-                    <Button className="text-[10px] md:text-sm lg:text-base" asChild>
-                      <Link href={`/dashboard/content/${article.id}`}>
-                        Read Article
-                      </Link>
-                    </Button>
+                <CardContent className="space-y-3">
+                  <div className="flex gap-2 flex-wrap">
+                    <Badge>
+                      {article.category_detail?.name ?? "Uncategorized"}
+                    </Badge>
+                    {article.tags_detail?.map((tag: any) => (
+                      <Badge key={tag.id} variant="outline">
+                        {tag.name}
+                      </Badge>
+                    ))}
                   </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )}
 
-          {/* All Articles */}
-          <div>
-            <h2 className="text-base lg:text-xl font-semibold text-foreground mb-4 flex items-center">
-              <TrendingUp className="w-5 h-5 mr-2 text-primary" />
-              {selectedCategory === "all"
-                ? "All Articles"
-                : categories.find((c) => c.id === selectedCategory)?.name}
-              <span className="ml-2 text-sm text-muted-foreground">
-                ({sortedArticles.length} articles)
-              </span>
-            </h2>
-
-            <div className="grid gap-6">
-              {sortedArticles.map((article) => (
-                <Card
-                  key={article.id}
-                  className="border-border hover:shadow-md transition-shadow"
-                >
-                  <CardContent className="px-6">
-                    <div className="flex flex-col md:flex-row gap-6">
-                      <div className="w-full md:w-48 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <BookOpen className="w-8 h-8 text-primary" />
-                      </div>
-                      <div>
-                        <div className="flex items-center justify-between gap-2 mb-2">
-                          <Badge variant="secondary">{article.category}</Badge>
-                          {article.featured && (
-                            <Badge
-                              variant="outline"
-                              className="text-primary border-primary"
-                            >
-                              Featured
-                            </Badge>
-                          )}
-                        </div>
-                        <h3 className="text-[15px] lg:text-base xl:text-lg leading-snug text-foreground font-semibold text-justify mb-2">
-                          {article.title}
-                        </h3>
-                        <p className="text-xs xl:text-sm text-muted-foreground mb-4 text-justify">
-                          {article.description}
-                        </p>
-
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {article.tags.map((tag) => (
-                            <Badge
-                              key={tag}
-                              variant="outline"
-                              className="text-[11px] lg:text-xs"
-                            >
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-
-                        <div className="flex items-center justify-between lg:justify-start lg:gap-5 text-xs lg:text-sm text-muted-foreground mt-3">
-                          <span>{article.author}</span>
-                          <span>{article.readTime}</span>
-                        </div>
-                        <div className="flex items-center space-x-4 text-[10px] lg:text-xs text-muted-foreground mt-2">
-                          <span className="flex items-center">
-                            <Eye className="w-3 h-3 mr-1" />
-                            {article.views}
-                          </span>
-                          <span className="flex items-center">
-                            <Heart className="w-3 h-3 mr-1" />
-                            {article.likes}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                  <div className="flex items-center justify-end px-2">
-                    <Button className="text-[10px] md:text-sm lg:text-base" asChild>
-                      <Link href={`/dashboard/content/${article.id}`}>
-                        Read Article
-                      </Link>
-                    </Button>
+                  <div className="flex justify-between text-sm text-gray-500 pt-2">
+                    <span className="flex items-center gap-1">
+                      <Eye className="h-4 w-4" /> {article.view_count ?? 0}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Heart className="h-4 w-4 text-red-500" />{" "}
+                      {article.like_count ?? 0}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Star className="h-4 w-4 text-yellow-500" />{" "}
+                      {article.average_rating?.toFixed(1) ?? "0.0"}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <TrendingUp className="h-4 w-4 text-green-500" />{" "}
+                      {article.reading_time_minutes ?? "—"} mins
+                    </span>
                   </div>
-                </Card>
-              ))}
-            </div>
 
-            {sortedArticles.length === 0 && (
-              <div className="text-center py-12">
-                <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  No articles found
-                </h3>
-                <p className="text-muted-foreground">
-                  Try adjusting your search terms or browse different
-                  categories.
-                </p>
-              </div>
-            )}
+                  <Link href={`/article/${article.slug}`}>
+                    <Button className="w-full mt-2">Read More</Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </TabsContent>
       </Tabs>
