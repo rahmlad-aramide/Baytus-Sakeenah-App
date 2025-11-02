@@ -29,7 +29,7 @@ export function useRegister(
     mutationFn: postRegister,
     meta: {
       successMessage: "Registration successful",
-      additionalDescription: "You are being redirected to verify your email.",
+      additionalDescription: "You are being redirected...",
       errorMessage: "Error creating your account",
     },
     ...options,

@@ -27,6 +27,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLogin } from "@/queries/auth";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import cookie from "@/services/cookie";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -39,6 +41,7 @@ type LoginSchema = z.infer<typeof loginSchema>;
 
 export default function SignInPage() {
   const [remember, setRemember] = useState(false);
+  const router = useRouter()
 
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
@@ -49,15 +52,10 @@ export default function SignInPage() {
   });
 
   const { mutate, isPending } = useLogin({
-    onSuccess(_data, variables) {
-      toast.success("Login successful! Redirecting...");
+    onSuccess(_data) {
       form.reset();
-    },
-    onError(err: any) {
-      toast.error(
-        err?.response?.data?.message ||
-          "Login failed. Please check your credentials."
-      );
+      cookie.set('auth-user', _data)
+      router.push('/dashboard')
     },
   });
 
@@ -87,7 +85,7 @@ export default function SignInPage() {
             {/* Header */}
             <div className="text-center mb-7">
               <div className="flex items-center justify-center space-x-2 mb-2">
-                <div className="w-10 h-8 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
+                <div className="w-10 h-8 bg-linear-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
                   <Heart className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <span className="text-xl lg:text-2xl font-bold text-foreground">
@@ -178,12 +176,15 @@ export default function SignInPage() {
                     </div>
                     <Button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
+                      className="w-full bg-linear-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
                       size="lg"
                       disabled={isPending}
                     >
                       {isPending ? (
-                        <Loader2 className="animate-spin" />
+                        <>
+                          <Loader2 className="animate-spin" />{" "}
+                          Logging in...
+                        </>
                       ) : (
                         "Login"
                       )}

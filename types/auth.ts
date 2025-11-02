@@ -1,10 +1,6 @@
 export interface AuthUser {
-  email: string;
-  status: string;
-  refresh_token: string;
-  refresh_token_expires: string;
-  access_token: string;
-  access_token_expires: string;
+  refresh: string;
+  access: string;
 }
 
 export interface ApiResponse<T> {
